@@ -1,6 +1,5 @@
-using TVRegDiff
-using Test
+using SafeTestsets
 
-@testset "TVRegDiff.jl" begin
-    # Write your tests here.
-end
+@safetestset "Test dataset" begin include("test_dataset.jl") end
+
+# run tests using `]test TVRegDiff` 
