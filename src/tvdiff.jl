@@ -78,8 +78,8 @@ function TVDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     end
 
     preconditioner = lowercase(preconditioner)
-    preconditioner ∉ ["cholesky","diagonal","noting"] && error(
-        "unexpected input in keyword argument preconditioner")
+    preconditioner ∉ ["cholesky","diagonal","none"] && 
+        error("unexpected input \"$(preconditioner)\" in keyword argument preconditioner")
 
     scale = lowercase(scale)
     if scale == "small"
@@ -119,7 +119,6 @@ function _TVDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
     # D = spdiagm(n, n + 1, 0 => -ones(n), 1 => ones(n)) / dx
     D = spdiagm(n, n, 0 => -ones(n), 1 => ones(n - 1)) / dx
     Dᵀ = transpose(D)
-
     # display(Matrix(D))
     # display(Matrix(Dᵀ))
 
@@ -150,19 +149,25 @@ function _TVDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
 
         # Solve linear equation.
         s = zero(u)
-        linop = LinearOperator(n, n, false, false, v -> α * L * v + Aᵀ(A(v)))
-        cg!(s, linop, -g; tol=1.0e-4, maxiter=100) # s is updated in place
+
+        function _linop(v)
+            α * L * v + Aᵀ(A(v))
+        end
+        linop = LinearOperator(n, n, true, true, v -> _linop(v))
+        # println("_linop(u): ", _linop(u))
+        # println("linop * u: ", linop * u)
         
-        diag_flag && println("Iteration $(i):\t
-                    relative change = $(norm(s) / norm(u)),\t
-                    gradient norm = $(norm(g))")
+        s = cg(linop, -g; tol=1.0e-4, maxiter=100)
+        
+        diag_flag && println("Iteration $(i):\trelative change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
 
         # Update current solution
+        # println("s: ", s)
         u += s
         
         # Display plot.
         if plot_flag
-            p = plot!(u)
+            p = plot(u)
             display(p)
         end
     end
