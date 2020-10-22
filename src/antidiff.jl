@@ -9,5 +9,5 @@ end
 Transpose of antidifferentiation operator
 """
 function _antidiff_transpose(x::Array{<:Real,1}, dx::Real)
-    sum(x) * ones(length(x) + 1) - [sum(x) / 2; cumsum(x) .- x / 2] * dx
+    [sum(x) / 2; (sum(x) .- cumsum(x) .- x / 2)][1:end-1] * dx
 end
