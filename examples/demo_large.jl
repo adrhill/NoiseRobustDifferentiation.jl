@@ -1,4 +1,4 @@
-# Script to demonstrate small-scale example from paper Rick Chartrand, 
+# Script to demonstrate large-scale example from paper Rick Chartrand, 
 # Numerical differentiation of noisy, nonsmooth data," ISRN
 # Applied Mathematics, Vol. 2011, Article ID 164564, 2011.
 
