@@ -2,7 +2,8 @@
 Antidifferentiation operator
 """
 function _antidiff(x::Array{<:Number,1}, dx::Real)
-    cumsum(x) - 0.5 * (x .- x[1]) / dx
+    (cumsum(x) - 0.5 * (x .- x[1]))[2:end] * dx #matlab
+    # cumsum(x) - 0.5 * (x .- x[1]) * dx #python
 end
 
 """

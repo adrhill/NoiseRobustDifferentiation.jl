@@ -24,9 +24,9 @@
                 conditioning issues when the linear system is solved.
 
 -`scale::String`:
-                Scale of dataset: `\"large\"` or `\"small\"` (case insensitive).  Default is
-                `\"small\"` .  `\"small\"`  has somewhat better boundary
-                behavior, but becomes unwieldly for data larger than
+                Scale of dataset, `\"large\"` or `\"small\"` (case insensitive).  
+                Default is `\"small\"` .  `\"small\"`  has somewhat better 
+                boundary behavior, but becomes unwieldly for data larger than
                 1000 entries or so.  `\"large\"` has simpler numerics but
                 is more efficient for large-scale problems.  `\"large\"` is
                 more readily modified for higher-order derivatives,
@@ -43,6 +43,10 @@
 
 -`dx::Real`:    Grid spacing, used in the definition of the derivative
                 operators.  Default is the reciprocal of the data size.
+
+-`cg_tol::Real`:      
+                Tolerance used in conjugate gradient method. 
+                Default is `1e-6`.
 
 -`plot_flag::Bool`:    
                 Flag whether to display plot at each iteration.
@@ -67,6 +71,7 @@ function TVDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     preconditioner::String="cholesky",
     ε::Real=1e-6,
     dx::Real=NaN,
+    cg_tol::Real=1e-6,
     diag_flag::Bool=true,
     plot_flag::Bool=true,
     )
@@ -82,9 +87,11 @@ function TVDiff(data::Array{<:Real,1}, iter::Int, α::Real;
 
     scale = lowercase(scale)
     if scale == "small"
-        return _TVDiff_small(data, iter, α, u_0, preconditioner, ε, dx, diag_flag, plot_flag)
+        return _TVDiff_small(data, iter, α, u_0, 
+                preconditioner, ε, dx, cg_tol, diag_flag, plot_flag)
     elseif scale == "large"
-        return _TVDiff_large(data, iter, α, u_0, preconditioner, ε, dx, diag_flag, plot_flag)
+        return _TVDiff_large(data, iter, α, u_0, 
+                preconditioner, ε, dx, cg_tol, diag_flag, plot_flag)
     else
         error("in keyword argument scale, expected  \"large\" or \"small\", got \"$(scale)\"")
     end
@@ -95,35 +102,33 @@ function _TVDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
     preconditioner::String,
     ε::Real,
     dx::Real, 
+    cg_tol::Real,
     diag_flag::Bool, 
     plot_flag::Bool, 
     )
 
     n = length(data)
 
-    # if isequal(u_0, [NaN])
-    #     u_0 = [0; diff(data); 0]
-    # elseif length(u_0) != (n + 1)
-    #     error("in keyword argument u_0, size $(size(u_0)) of intialization doesn't match size ($(n + 1),) required for scale=\"small\".")
-    # end
     if isequal(u_0, [NaN])
-        u_0 = [0; diff(data)]
-    elseif length(u_0) != n
-        error("in keyword argument u_0, size $(size(u_0)) of intialization doesn't match size ($(n),) required for scale=\"large\".")
+        u_0 = [0; diff(data); 0]
+    elseif length(u_0) != (n + 1)
+        error("in keyword argument u_0, size $(size(u_0)) of intialization doesn't match size ($(n + 1),) required for scale=\"small\".")
     end
 
     u = copy(u_0)
 
     # Construct differentiation matrix.
-    # D = spdiagm(n, n + 1, 0 => -ones(n), 1 => ones(n)) / dx
-    D = spdiagm(n, n, 0 => -ones(n), 1 => ones(n - 1)) / dx
+    D = spdiagm(n, n + 1, 0 => -ones(n), 1 => ones(n)) / dx
     Dᵀ = transpose(D)
-    # display(Matrix(D))
-    # display(Matrix(Dᵀ))
 
     # Construct antidifferentiation operator and its adjoint.
-    A(x)  = _antidiff(x, dx)
-    Aᵀ(x) = _antidiff_transpose(x, dx)
+    function A(x)
+        (cumsum(x) - 0.5 * (x .- x[1]))[2:end] * dx #matlab
+    end
+
+    function Aᵀ(x)
+        [sum(x) / 2; (sum(x) .- cumsum(x) .- x / 2)]* dx
+    end
 
     # Precompute antidifferentiation adjoint on data
     # Since A([0]) = 0, we need to adjust.
@@ -142,26 +147,17 @@ function _TVDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
         g = Aᵀ(A(u)) + Aᵀb + α * L * u
 
         # Simple preconditioner.
-        P = α * spdiagm(n, n, 0 => diag(L) .+ 1)
-        # display(Matrix(L))
-        # display(Matrix(P))
+        P = α * spdiagm(n+1, n+1, 0 => diag(L) .+ 1)
 
-        # Solve linear equation.
-        s = zero(u)
-
-        function _linop(v)
-            α * L * v + Aᵀ(A(v))
-        end
-        linop = LinearOperator(n, n, true, true, v -> _linop(v))
-        # println("_linop(u): ", _linop(u))
-        # println("linop * u: ", linop * u)
+        # Prepare linear operator for linear equation.        
+        linop = LinearOperator(n+1, n+1, true, true, v -> α * L * v + Aᵀ(A(v)))
         
-        s = cg(linop, -g; tol=1.0e-4, maxiter=100)
+        # Solve linear equation.
+        s = cg(linop, -g; tol=1.0e-8, maxiter=100)
         
         diag_flag && println("Iteration $(i):\trelative change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
 
         # Update current solution
-        # println("s: ", s)
         u += s
         
         # Display plot.
@@ -177,7 +173,8 @@ function _TVDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
     u_0::Array{<:Real,1},
     preconditioner::String,
     ep::Real,
-    dx::Real, 
+    dx::Real,
+    cg_tol::Real,
     diag_flag::Bool, 
     plot_flag::Bool, 
     )

@@ -15,10 +15,13 @@ include("tvdiff.jl")
 using CSV, DataFrames
 file = CSV.File("./data/small_demo_data.csv")
 df = DataFrame(file)
+x = df.noisyabsdata
 
-TVDiff(df.noisyabsdata, 50, 0.2, scale="small", preconditioner="none", 
+dx = TVDiff(x, 500, 0.2, scale="small", preconditioner="none", 
     ε=1e-6, dx=0.01, plot_flag=false, diag_flag=true)
 
+
+display(plot([x, dx], labels=["x" "dx"]))
 # a = collect(1:6)
 # TVDiff(a, 5, 0.2, scale="small")
 # TVDiff(a, 500, 0.2, scale="small")
