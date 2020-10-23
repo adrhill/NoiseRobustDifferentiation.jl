@@ -1,3 +1,0 @@
-"""
-Antidifferentiation operator
-"""
