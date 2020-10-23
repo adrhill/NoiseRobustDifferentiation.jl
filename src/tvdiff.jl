@@ -26,14 +26,16 @@
 -`scale::String`:
                 Scale of dataset, `\"large\"` or `\"small\"` (case insensitive).  
                 Default is `\"small\"` .  `\"small\"`  has somewhat better 
-                boundary behavior, but becomes unwieldly for data larger than
-                1000 entries or so.  `\"large\"` has simpler numerics but
+                boundary behavior, but becomes unwieldly for very large datasets.  
+                `\"large\"` has simpler numerics but
                 is more efficient for large-scale problems.  `\"large\"` is
                 more readily modified for higher-order derivatives,
                 since the implicit differentiation matrix is square.
                 
 -`preconditioner::String`:    
-                Method used for preconditioning. 
+                Method used for preconditioning if `scale=\"large\"` is chosen.
+                Currently,  `\"cholesky\"` and `\"diagonal\"` are available.
+                Default is `\"cholesky\"`.
 
 -`ε::Real`:     Parameter for avoiding division by zero.  Default value
                 is `1e-6`.  Results should not be very sensitive to the
@@ -73,7 +75,7 @@ function TVDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     dx::Real=NaN,
     cg_tol::Real=1e-6,
     diag_flag::Bool=true,
-    plot_flag::Bool=true,
+    plot_flag::Bool=false,
     )
 
     n = length(data)
@@ -81,20 +83,25 @@ function TVDiff(data::Array{<:Real,1}, iter::Int, α::Real;
         dx = 1 / n
     end
 
+    # Assert preconditioner
     preconditioner = lowercase(preconditioner)
-    preconditioner ∉ ["cholesky","diagonal","none"] && 
+    preconditioner ∉ ["cholesky","diagonal"] && 
         error("unexpected input \"$(preconditioner)\" in keyword argument preconditioner")
 
+    # Run TVDiff for selected method
     scale = lowercase(scale)
     if scale == "small"
-        return _TVDiff_small(data, iter, α, u_0, 
-                preconditioner, ε, dx, cg_tol, diag_flag, plot_flag)
+        u = _TVDiff_small(data, iter, α, u_0, preconditioner, ε, dx, cg_tol, diag_flag)
     elseif scale == "large"
-        return _TVDiff_large(data, iter, α, u_0, 
-                preconditioner, ε, dx, cg_tol, diag_flag, plot_flag)
+        u = _TVDiff_large(data, iter, α, u_0, preconditioner, ε, dx, cg_tol, diag_flag)
     else
         error("in keyword argument scale, expected  \"large\" or \"small\", got \"$(scale)\"")
     end
+
+    # Display plot
+    plot_flag && display(_plot_diff(data, u))
+
+    return u
 end
 
 function _TVDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
@@ -103,18 +110,18 @@ function _TVDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
     ε::Real,
     dx::Real, 
     cg_tol::Real,
-    diag_flag::Bool, 
-    plot_flag::Bool, 
+    diag_flag::Bool,
     )
 
     n = length(data)
 
+    #= Assert initialization if provided, otherwise set 
+    default initization to naive derivative =#
     if isequal(u_0, [NaN])
         u_0 = [0; diff(data); 0]
     elseif length(u_0) != (n + 1)
         error("in keyword argument u_0, size $(size(u_0)) of intialization doesn't match size ($(n + 1),) required for scale=\"small\".")
     end
-
     u = copy(u_0)
 
     # Construct differentiation matrix.
@@ -123,7 +130,7 @@ function _TVDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
 
     # Construct antidifferentiation operator and its adjoint.
     function A(x)
-        (cumsum(x) - 0.5 * (x .- x[1]))[2:end] * dx #matlab
+        (cumsum(x) - 0.5 * (x .- x[1]))[2:end] * dx
     end
 
     function Aᵀ(x)
@@ -153,18 +160,12 @@ function _TVDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
         linop = LinearOperator(n+1, n+1, true, true, v -> α * L * v + Aᵀ(A(v)))
         
         # Solve linear equation.
-        s = cg(linop, -g; tol=1.0e-8, maxiter=100)
+        s = cg(linop, -g; tol=cg_tol, maxiter=100)
         
         diag_flag && println("Iteration $(i):\trelative change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
 
         # Update current solution
         u += s
-        
-        # Display plot.
-        if plot_flag
-            p = plot(u)
-            display(p)
-        end
     end
     return u
 end
@@ -172,82 +173,72 @@ end
 function _TVDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
     u_0::Array{<:Real,1},
     preconditioner::String,
-    ep::Real,
+    ε::Real,
     dx::Real,
     cg_tol::Real,
-    diag_flag::Bool, 
-    plot_flag::Bool, 
+    diag_flag::Bool,
     )
 
     n = length(data)
+    
+    # Since Au(0) = 0, we need to adjust.
+    data = data .- data[1]
 
+    #= Assert initialization if provided, otherwise set 
+    default initization to naive derivative =#
     if isequal(u_0, [NaN])
         u_0 = [0; diff(data)]
     elseif length(u_0) != n
         error("in keyword argument u_0, size $(size(u_0)) of intialization doesn't match size ($(n),) required for scale=\"large\".")
     end
     u = copy(u_0)
-
+    
     # Construct differentiation matrix.
-    c = ones(n) / dx
-    D = spdiagm(n, n + 1, 0 => -c, 1 => c)
+    D = spdiagm(n, n, 0 => -ones(n-1), 1 => ones(n-1)) / dx
     Dᵀ = transpose(D)
 
-    # display(Matrix(D))
-    # display(Matrix(Dᵀ))
-
     # Construct antidifferentiation operator and its adjoint.
-    A(x)  = _antidiff(x, dx)
-    Aᵀ(x) = _antidiff_transpose(x, dx)
+    A(x) = cumsum(x)
+    
+    function Aᵀ(x)
+        sum(x) .- [0; cumsum(x[1:end-1])]
+    end
 
     # Precompute antidifferentiation adjoint on data
     Aᵀd = Aᵀ(data)
 
-    for i = 1:iter_segments
+    for i = 1:iter
         # Diagonal matrix of weights, for linearizing E-L equation.
-        q = 1 ./ sqrt.((D * u).^2 + ε)
+        q = 1 ./ sqrt.((D * u).^2 .+ ε)
         Q = spdiagm(n, n, 0 => q)
 
         # Linearized diffusion matrix, also approximation of Hessian.
         L = Dᵀ * Q * D
 
         # Gradient of functional.
-        g = Aᵀ(A(u)) - Aᵀd
-        g += α * L * u
+        g = Aᵀ(A(u)) - Aᵀd + α * L * u
 
         # Build preconditioner.
-        c = cumsum(n:-1:1)'
+        c = cumsum(n:-1:1)
         B = α * L + spdiagm(n, n, 0 => reverse(c))
-        R = precondtion(B)
 
-        # Prepare to solve linear equation.
-        tol = 1.0e-4
-        maxit = 100
-        s = zero(u)
-        if diagflag
-            cg!(s, ) # s is updated in place
-            """
-            # s = pcg( 
-                A = @(x) ( alph * L * x + AT( A( x ) ) )
-                b = -g, 
-                tol, 
-                maxit, 
-                M1 = R', 
-                M2 = R );
-            """
-                # fprintf( 'iteration %2d: relative change = %.3e, gradient norm = %.3e\n', ii, norm( s ) / norm( u ), norm( g ) );
-        else
-            # [ s, ~ ] = pcg( @(x) ( alph * L * x + AT( A( x ) ) ), -g, tol, maxit, R', R );
+        if preconditioner == "cholesky"
+            # Incomplete Cholesky preconditioner with cut-off level 2
+            R = CholeskyPreconditioner(B, 2) 
+        elseif preconditioner == "diagonal"
+            R = DiagonalPreconditioner(B)
         end
+
+        # Prepare linear operator for linear equation.        
+        linop = LinearOperator(n, n, true, true, v -> α * L * v + Aᵀ(A(v)))
+
+        # Solve linear equation.
+        s = cg(linop, -g; Pl=R, tol=cg_tol, maxiter=100)
+        
+        diag_flag && println("Iteration $(i):\trelative change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
 
         # Update current solution
         u += s
-        
-        # Display plot.
-        if plotflag
-            p = plot(u)
-            display(p)
-        end
     end
     return u
 end

@@ -9,10 +9,10 @@ file = CSV.File("./data/large_demo_data.csv")
 df = DataFrame(file)
 
 ## Smoother example
-TVDiff(df.noisyabsdata, 40, 1e-1, scale="large", ε=1e-8, 
-    plot_flag=true, diag_flag=true)
+TVDiff(df.largescaledata, 40, 1e-1, scale="large", preconditioner="cholesky",
+    ε=1e-8, plot_flag=true, diag_flag=true)
 
 ## Less smooth example## Smoother example
-TVDiff(df.noisyabsdata, 40, 1e-3, scale="large", ε=1e-6, 
-    plot_flag=true, diag_flag=true)
+TVDiff(df.largescaledata, 40, 1e-3, scale="large", preconditioner="cholesky", 
+    ε=1e-6, plot_flag=true, diag_flag=true)
 

@@ -1,6 +1,7 @@
 module TVRegDiff
-
 using Plots
+using LaTeXStrings
+
 using LinearAlgebra
 using SparseArrays
 using Preconditioners
@@ -8,23 +9,25 @@ using Preconditioners: AbstractPreconditioner
 using LinearOperators
 using IterativeSolvers
 
-include("antidiff.jl")
+
+include("plotting.jl")
 include("tvdiff.jl")
 
 # Small experiment for debugging here
 using CSV, DataFrames
-file = CSV.File("./data/small_demo_data.csv")
+
+# file = CSV.File("./data/small_demo_data.csv")
+# df = DataFrame(file)
+# TVDiff(df.noisyabsdata, 500, 0.2, scale="large", 
+#     ε=1e-6, dx=0.01, plot_flag=true, diag_flag=true)
+
+file = CSV.File("./data/large_demo_data.csv")
 df = DataFrame(file)
-x = df.noisyabsdata
+TVDiff(df.largescaledata, 40, 1e-3, scale="small", ε=1e-6, 
+    plot_flag=true, diag_flag=true)
 
-dx = TVDiff(x, 500, 0.2, scale="small", preconditioner="none", 
-    ε=1e-6, dx=0.01, plot_flag=false, diag_flag=true)
-
-
-display(plot([x, dx], labels=["x" "dx"]))
-# a = collect(1:6)
-# TVDiff(a, 5, 0.2, scale="small")
-# TVDiff(a, 500, 0.2, scale="small")
+# x = collect(1:10)
+# TVDiff(x, 1, 0.2, scale="large")
 
 export TVDiff
 

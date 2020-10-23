@@ -14,8 +14,8 @@ Data was generated in Matlab using
 results vary slightly with different random instances
 =#
 
-diff = TVDiff(df.noisyabsdata, 500, 0.2, scale="small", preconditioner="none", 
-    ε=1e-6, dx=0.01, plot_flag=true, diag_flag=true)
+TVDiff(df.noisyabsdata, 500, 0.2, scale="small", ε=1e-6, dx=0.01, 
+    plot_flag=true, diag_flag=true)
     
 #=
 Defaults mean that 
