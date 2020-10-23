@@ -34,8 +34,8 @@
                 
 -`preconditioner::String`:    
                 Method used for preconditioning if `scale=\"large\"` is chosen.
-                Currently,  `\"cholesky\"` and `\"diagonal\"` are available.
-                Default is `\"cholesky\"`.
+                Currently,  `\"cholesky\"`, `\"diagonal\"`,`\"amg_rs\"`,`\"amg_sa\"` 
+                are available. Default is `\"amg_rs\"`.
 
 -`ε::Real`:     Parameter for avoiding division by zero.  Default value
                 is `1e-6`.  Results should not be very sensitive to the
@@ -85,7 +85,7 @@ function TVDiff(data::Array{<:Real,1}, iter::Int, α::Real;
 
     # Assert preconditioner
     preconditioner = lowercase(preconditioner)
-    preconditioner ∉ ["cholesky","diagonal"] && 
+    preconditioner ∉ ["cholesky","diagonal","amg_rs","amg_sa"] && 
         error("unexpected input \"$(preconditioner)\" in keyword argument preconditioner")
 
     # Run TVDiff for selected method
@@ -162,7 +162,7 @@ function _TVDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
         # Solve linear equation.
         s = cg(linop, -g; tol=cg_tol, maxiter=100)
         
-        diag_flag && println("Iteration $(i):\trelative change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
+        diag_flag && println("Iteration $(i):\trel. change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
 
         # Update current solution
         u += s
@@ -224,18 +224,24 @@ function _TVDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
 
         if preconditioner == "cholesky"
             # Incomplete Cholesky preconditioner with cut-off level 2
-            R = CholeskyPreconditioner(B, 2) 
+            P = CholeskyPreconditioner(B, 2) 
         elseif preconditioner == "diagonal"
-            R = DiagonalPreconditioner(B)
+            P = DiagonalPreconditioner(B)
+        elseif preconditioner == "amg_rs"
+            # Ruge-Stuben variant
+            P = AMGPreconditioner{RugeStuben}(B)
+        elseif preconditioner == "amg_sa"
+            # Smoothed aggregation
+            P = AMGPreconditioner{SmoothedAggregation}(B)
         end
 
         # Prepare linear operator for linear equation.        
         linop = LinearOperator(n, n, true, true, v -> α * L * v + Aᵀ(A(v)))
 
         # Solve linear equation.
-        s = cg(linop, -g; Pl=R, tol=cg_tol, maxiter=100)
+        s = cg(linop, -g; Pl=P, tol=cg_tol, maxiter=100)
         
-        diag_flag && println("Iteration $(i):\trelative change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
+        diag_flag && println("Iteration $(i):\trel. change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
 
         # Update current solution
         u += s

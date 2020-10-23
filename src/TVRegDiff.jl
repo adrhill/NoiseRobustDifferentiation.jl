@@ -23,7 +23,7 @@ using CSV, DataFrames
 
 file = CSV.File("./data/large_demo_data.csv")
 df = DataFrame(file)
-TVDiff(df.largescaledata, 40, 1e-3, scale="small", ε=1e-6, 
+TVDiff(df.largescaledata, 40, 1e-1, scale="large", preconditioner="amg_rs", ε=1e-8, 
     plot_flag=true, diag_flag=true)
 
 # x = collect(1:10)
