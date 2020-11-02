@@ -1,13 +1,15 @@
 """
-    TVDiff(data::Array{<:Real,1}, iter::Int, α::Real; kwargs...) -> u
-# Arguments
--`data::Array{<:Real,1}`:    Vector of data to be differentiated.
+    TVDiff(data::Array{<:Real,1}, iter::Int, α::Real; kwargs...)
 
--`iter::Int`:   Number of iterations to run the main loop.  A stopping
+# Arguments
+- `data::Array{<:Real,1}`:    
+                Vector of data to be differentiated.
+
+- `iter::Int`:  Number of iterations to run the main loop.  A stopping
                 condition based on the norm of the gradient vector `g`
                 below would be an easy modification.  No default value.
 
--`α::Real`:     Regularization parameter.  This is the main parameter
+- `α::Real`:    Regularization parameter.  This is the main parameter
                 to fiddle with.  Start by varying by orders of
                 magnitude until reasonable results are obtained.  A
                 value to the nearest power of 10 is usally adequate.
@@ -15,7 +17,7 @@
                 regularization strenght and improve conditioning.
 
 ## Keywords
--`u0Array{<:Real,1}`:          
+- `u0::Array{<:Real,1}`:          
                 Initialization of the iteration.  Default value is the
                 naive derivative (without scaling), of appropriate
                 length (this being different for the two methods).
@@ -23,7 +25,7 @@
                 the intialization, a poor choice can exacerbate
                 conditioning issues when the linear system is solved.
 
--`scale::String`:
+- `scale::String`:
                 Scale of dataset, `\"large\"` or `\"small\"` (case insensitive).  
                 Default is `\"small\"` .  `\"small\"`  has somewhat better 
                 boundary behavior, but becomes unwieldly for very large datasets.  
@@ -32,30 +34,30 @@
                 more readily modified for higher-order derivatives,
                 since the implicit differentiation matrix is square.
                 
--`preconditioner::String`:    
+- `preconditioner::String`:    
                 Method used for preconditioning if `scale=\"large\"` is chosen.
                 Currently,  `\"cholesky\"`, `\"diagonal\"`,`\"amg_rs\"`,`\"amg_sa\"` 
                 are available. Default is `\"amg_rs\"`.
 
--`ε::Real`:     Parameter for avoiding division by zero.  Default value
+- `ε::Real`:     Parameter for avoiding division by zero.  Default value
                 is `1e-6`.  Results should not be very sensitive to the
                 value.  Larger values improve conditioning and
                 therefore speed, while smaller values give more
                 accurate results with sharper jumps.
 
--`dx::Real`:    Grid spacing, used in the definition of the derivative
+- `dx::Real`:    Grid spacing, used in the definition of the derivative
                 operators.  Default is the reciprocal of the data size.
 
--`cg_tol::Real`:      
+- `cg_tol::Real`:      
                 Tolerance used in conjugate gradient method. 
                 Default is `1e-6`.
 
--`plot_flag::Bool`:    
+- `plot_flag::Bool`:    
                 Flag whether to display plot at each iteration.
                 Default is `true`.  Useful, but adds significant
                 running time.
 
--`diag_flag::Bool`:    
+- `diag_flag::Bool`:    
                 Flag whether to display diagnostics at each
                 iteration.  Default is `true`.  Useful for diagnosing
                 preconditioning problems.  When tolerance is not met,
@@ -63,7 +65,7 @@
                 large relative residual.
 
 # Output
--`u`:           Estimate of the regularized derivative of data.  Due to
+- `u`:          Estimate of the regularized derivative of data.  Due to
                 different grid assumptions, `length(u) = length(data) + 1`
                 if `scale = \"small\"`, otherwise `length(u) = length(data)`.
 """
