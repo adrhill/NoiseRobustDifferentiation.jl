@@ -81,7 +81,7 @@ function TVDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     )
 
     n = length(data)
-    if dx === NaN
+    if isnan(dx)
         dx = 1 / n
     end
 
