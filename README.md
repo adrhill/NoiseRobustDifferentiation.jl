@@ -1,5 +1,8 @@
 # TVDifferentiation.jl
 
+[![Travis](https://travis-ci.com/adrhill/TVDifferentiation.jl.svg?branch=main)](https://travis-ci.com/github/adrhill/TVDifferentiation.jl)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://adrhill.github.io/TVDifferentiation.jl/dev/)
+
 Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVDiff) based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) with tests from [Simone Sturniolo's Python reimplementation](https://github.com/stur86/tvregdiff).
 
 ## Citation
