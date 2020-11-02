@@ -9,4 +9,6 @@ makedocs(
 
 deploydocs(
     repo = "github.com/adrhill/TVDifferentiation.jl.git",
+    devbranch ="main",
+    branch = "gh-pages",
 )
