@@ -1,7 +1,7 @@
-using TVRegDiff
+using TVDifferentiation
 using Test
 
-@testset "TVRegDiff.jl" begin
+@testset "TVDifferentiation.jl" begin
     # TODO: Write tests here.
 end
 

@@ -1,4 +1,4 @@
-name = "TVRegDiff"
+name = "TVDifferentiation"
 uuid = "470638dc-0858-4731-a73a-678bdc45695b"
 authors = ["Adrian Hill"]
 version = "0.1.0"

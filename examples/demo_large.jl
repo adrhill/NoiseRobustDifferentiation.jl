@@ -2,7 +2,7 @@
 # Numerical differentiation of noisy, nonsmooth data," ISRN
 # Applied Mathematics, Vol. 2011, Article ID 164564, 2011.
 
-using TVRegDiff
+using TVDifferentiation
 using CSV, DataFrames
 
 file = CSV.File("./data/large_demo_data.csv")

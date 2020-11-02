@@ -1,10 +1,10 @@
 using Documenter
-using TVRegDiff
+using TVDifferentiation
 
 makedocs(
-    sitename = "TVRegDiff",
+    sitename = "TVDifferentiation",
     format = Documenter.HTML(),
-    modules = [TVRegDiff]
+    modules = [TVDifferentiation]
 )
 
 # Documenter can also automatically deploy documentation to gh-pages.
