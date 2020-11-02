@@ -1,5 +1,6 @@
 # TVDifferentiation.jl
 
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/adrhill/TVDifferentiation.jl/blob/main/LICENSE)
 [![Travis](https://travis-ci.com/adrhill/TVDifferentiation.jl.svg?branch=main)](https://travis-ci.com/github/adrhill/TVDifferentiation.jl)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://adrhill.github.io/TVDifferentiation.jl/dev/)
 
