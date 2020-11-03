@@ -19,7 +19,7 @@ TVRegDiff(df.noisyabsdata, 500, 0.2, scale="small", ε=1e-6, dx=0.01,
     
 #=
 Defaults mean that 
-    u = TVDiff(df.noisyabsdata, 500, 0.2 ); 
+    u = TVRegDiff(df.noisyabsdata, 500, 0.2 ); 
 would be the same.
 Best result obtained after 7000 iterations, though difference is minimal.
 Set last input to `false` to turn off diagnostics. 
