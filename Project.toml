@@ -1,4 +1,4 @@
-name = "TVDifferentiation"
+name = "NoiseRobustDifferentiation"
 uuid = "470638dc-0858-4731-a73a-678bdc45695b"
 authors = ["Adrian Hill"]
 version = "0.1.0"
@@ -19,8 +19,9 @@ julia = "1.5"
 [extras]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "SafeTestsets", "CSV", "DataFrames"]
+test = ["CSV", "DataFrames", "Random", "SafeTestsets", "Test"]

@@ -1,14 +1,14 @@
 using Documenter
-using TVDifferentiation
+using NoiseRobustDifferentiation
 
 makedocs(
-    sitename = "TVDifferentiation",
+    sitename = "NoiseRobustDifferentiation",
     format = Documenter.HTML(),
-    modules = [TVDifferentiation]
+    modules = [NoiseRobustDifferentiation]
 )
 
 deploydocs(
-    repo = "github.com/adrhill/TVDifferentiation.jl.git",
+    repo = "github.com/adrhill/NoiseRobustDifferentiation.jl.git",
     devbranch ="main",
     branch = "gh-pages",
 )

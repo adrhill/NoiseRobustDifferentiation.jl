@@ -1,4 +1,4 @@
-module TVDifferentiation
+module NoiseRobustDifferentiation
 using Plots
 using LaTeXStrings
 
@@ -9,7 +9,7 @@ using LinearOperators
 using IterativeSolvers
 
 include("plotting.jl")
-include("TVDiff.jl")
+include("TVRegDiff.jl")
 
 export TVDiff
 

@@ -1,7 +1,7 @@
-using TVDifferentiation
+using NoiseRobustDifferentiation
 using Test
 
-@testset "TVDifferentiation.jl" begin
+@testset "Scale large" begin
     # TODO: Write tests here.
 end
 

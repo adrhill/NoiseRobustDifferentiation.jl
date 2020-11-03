@@ -1,5 +1,5 @@
 """
-    TVDiff(data::Array{<:Real,1}, iter::Int, α::Real; kwargs...)
+    TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real; kwargs...)
 
 # Arguments
 - `data::Array{<:Real,1}`:    
@@ -69,7 +69,7 @@
                 different grid assumptions, `length(u) = length(data) + 1`
                 if `scale = \"small\"`, otherwise `length(u) = length(data)`.
 """
-function TVDiff(data::Array{<:Real,1}, iter::Int, α::Real;
+function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     u_0::Array{<:Real,1}=[NaN],
     scale::String="small",
     preconditioner::String="cholesky",
@@ -90,12 +90,12 @@ function TVDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     preconditioner ∉ ["cholesky","diagonal","amg_rs","amg_sa"] && 
         error("unexpected input \"$(preconditioner)\" in keyword argument preconditioner")
 
-    # Run TVDiff for selected method
+    # Run TVRegDiff for selected method
     scale = lowercase(scale)
     if scale == "small"
-        u = _TVDiff_small(data, iter, α, u_0, preconditioner, ε, dx, cg_tol, diag_flag)
+        u = _TVRegDiff_small(data, iter, α, u_0, preconditioner, ε, dx, cg_tol, diag_flag)
     elseif scale == "large"
-        u = _TVDiff_large(data, iter, α, u_0, preconditioner, ε, dx, cg_tol, diag_flag)
+        u = _TVRegDiff_large(data, iter, α, u_0, preconditioner, ε, dx, cg_tol, diag_flag)
     else
         error("in keyword argument scale, expected  \"large\" or \"small\", got \"$(scale)\"")
     end
@@ -106,7 +106,7 @@ function TVDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     return u
 end
 
-function _TVDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
+function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
     u_0::Array{<:Real,1},
     preconditioner::String,
     ε::Real,
@@ -172,7 +172,7 @@ function _TVDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
     return u
 end
 
-function _TVDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
+function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
     u_0::Array{<:Real,1},
     preconditioner::String,
     ε::Real,

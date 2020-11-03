@@ -1,4 +1,4 @@
-# TVDifferentiation.jl
+# NoiseRobustDifferentiation.jl
 
 Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVDiff) based on [Rick Chartrand's original MATLAB code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) with small changes and tests from [Simone Sturniolo's Python reimplementation](https://github.com/stur86/tvregdiff).
 
@@ -17,7 +17,7 @@ Since the CG method from IterativeSolvers.jl allows for preconditioners, most of
 
 ## Functions
 ```@docs
-TVDiff(data::Array{<:Real,1}, iter::Int, α::Real; kwargs...)
+TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real; kwargs...)
 ```
 
 ## Citation
