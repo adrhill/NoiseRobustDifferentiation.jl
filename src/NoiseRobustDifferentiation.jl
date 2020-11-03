@@ -11,6 +11,6 @@ using IterativeSolvers
 include("plotting.jl")
 include("TVRegDiff.jl")
 
-export TVDiff
+export TVRegDiff
 
 end # module 
