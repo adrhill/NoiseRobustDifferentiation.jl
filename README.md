@@ -1,6 +1,6 @@
 # NoiseRobustDifferentiation.jl
 
-[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/adrhill/NoiseRobustDifferentiation.jl/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/adrhill/NoiseRobustDifferentiation.jl)](https://github.com/adrhill/NoiseRobustDifferentiation.jl/blob/main/LICENSE)
 [![Travis](https://travis-ci.com/adrhill/NoiseRobustDifferentiation.jl.svg?branch=main)](https://travis-ci.com/github/adrhill/NoiseRobustDifferentiation.jl)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/)
 
