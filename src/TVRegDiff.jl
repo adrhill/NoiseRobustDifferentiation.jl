@@ -33,11 +33,6 @@
                 is more efficient for large-scale problems.  `\"large\"` is
                 more readily modified for higher-order derivatives,
                 since the implicit differentiation matrix is square.
-                
-- `preconditioner::String`:    
-                Method used for preconditioning if `scale=\"large\"` is chosen.
-                Currently,  `\"cholesky\"`, `\"diagonal\"`,`\"amg_rs\"`,`\"amg_sa\"` 
-                are available. Default is `\"amg_rs\"`.
 
 - `ε::Real`:     Parameter for avoiding division by zero.  Default value
                 is `1e-6`.  Results should not be very sensitive to the
@@ -51,6 +46,9 @@
 - `cg_tol::Real`:      
                 Tolerance used in conjugate gradient method. 
                 Default is `1e-6`.
+- `cgmaxit::Int`:
+                Maximum number of iterations to use in conjugate gradient optimisation. 
+                Default is 100.
 
 - `plot_flag::Bool`:    
                 Flag whether to display plot at each iteration.
@@ -64,6 +62,20 @@
                 an early iterate being best is more worrying than a
                 large relative residual.
 
+-`precond_flag::Bool`: 
+                Flag whether to use a preconditioner for conjugate gradient solution.
+                Default is `true`. While in principle it should speed things up, 
+                sometimes the preconditioner can cause convergence problems instead,
+                and should be turned off. Note that this mostly makes sense for 
+                `scale = \"small\"`; for `scale = \"large\"`, the improved preconditioner is one
+                of the main features of the algorithms and turning it off defeats the
+                point.
+
+- `preconditioner::String`:    
+                Method used for preconditioning if `scale=\"large\"` is chosen.
+                Currently,  `\"cholesky\"`, `\"diagonal\"`,`\"amg_rs\"`,`\"amg_sa\"` 
+                are available. Default is `\"amg_rs\"`.
+
 # Output
 - `u`:          Estimate of the regularized derivative of data.  Due to
                 different grid assumptions, `length(u) = length(data) + 1`
@@ -76,8 +88,10 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     ε::Real=1e-6,
     dx::Real=NaN,
     cg_tol::Real=1e-6,
+    cg_maxiter::Int=100,
     diag_flag::Bool=true,
     plot_flag::Bool=false,
+    precond_flag::Bool=false,
     )
 
     n = length(data)
@@ -93,9 +107,9 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     # Run TVRegDiff for selected method
     scale = lowercase(scale)
     if scale == "small"
-        u = _TVRegDiff_small(data, iter, α, u_0, preconditioner, ε, dx, cg_tol, diag_flag)
+        u = _TVRegDiff_small(data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, diag_flag, precond_flag)
     elseif scale == "large"
-        u = _TVRegDiff_large(data, iter, α, u_0, preconditioner, ε, dx, cg_tol, diag_flag)
+        u = _TVRegDiff_large(data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, diag_flag, preconditioner)
     else
         error("in keyword argument scale, expected  \"large\" or \"small\", got \"$(scale)\"")
     end
@@ -108,11 +122,12 @@ end
 
 function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
     u_0::Array{<:Real,1},
-    preconditioner::String,
     ε::Real,
     dx::Real, 
     cg_tol::Real,
+    cg_maxiter::Int,
     diag_flag::Bool,
+    precond_flag::Bool,
     )
 
     n = length(data)
@@ -120,7 +135,7 @@ function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
     #= Assert initialization if provided, otherwise set 
     default initization to naive derivative =#
     if isequal(u_0, [NaN])
-        u_0 = [0; diff(data); 0]
+        u_0 = [0; diff(data); 0] / dx
     elseif length(u_0) != (n + 1)
         error("in keyword argument u_0, size $(size(u_0)) of intialization doesn't match size ($(n + 1),) required for scale=\"small\".")
     end
@@ -136,7 +151,7 @@ function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
     end
 
     function Aᵀ(x)
-        [sum(x) / 2; (sum(x) .- cumsum(x) .- x / 2)]* dx
+        [sum(x) / 2; (sum(x) .- cumsum(x) .- x / 2)] * dx
     end
 
     # Precompute antidifferentiation adjoint on data
@@ -156,29 +171,34 @@ function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
         g = Aᵀ(A(u)) + Aᵀb + α * L * u
 
         # Simple preconditioner.
-        P = α * spdiagm(n+1, n+1, 0 => diag(L) .+ 1)
+        P = α * spdiagm(n + 1, n + 1, 0 => diag(L) .+ 1)
 
         # Prepare linear operator for linear equation.        
-        linop = LinearOperator(n+1, n+1, true, true, v -> α * L * v + Aᵀ(A(v)))
+        linop = LinearOperator(n + 1, n + 1, true, true, v -> α * L * v + Aᵀ(A(v)))
         
         # Solve linear equation.
-        s = cg(linop, -g; tol=cg_tol, maxiter=100)
-        
+        if precond_flag
+            s = cg(linop, -g; tol=cg_tol, maxiter=cg_maxiter, Pl=P)
+        else 
+            s = cg(linop, -g; tol=cg_tol, maxiter=cg_maxiter)
+        end
+
         diag_flag && println("Iteration $(i):\trel. change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
 
         # Update current solution
         u += s
     end
-    return u[1:end-1]
+    return u[1:end - 1]
 end
 
 function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
     u_0::Array{<:Real,1},
-    preconditioner::String,
     ε::Real,
     dx::Real,
     cg_tol::Real,
+    cg_maxiter::Int,
     diag_flag::Bool,
+    preconditioner::String,
     )
 
     n = length(data)
@@ -189,21 +209,21 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
     #= Assert initialization if provided, otherwise set 
     default initization to naive derivative =#
     if isequal(u_0, [NaN])
-        u_0 = [0; diff(data)]
+        u_0 = [0; diff(data)] / dx
     elseif length(u_0) != n
         error("in keyword argument u_0, size $(size(u_0)) of intialization doesn't match size ($(n),) required for scale=\"large\".")
     end
     u = copy(u_0)
     
     # Construct differentiation matrix.
-    D = spdiagm(n, n, 0 => -ones(n-1), 1 => ones(n-1)) / dx
+    D = spdiagm(n, n, 0 => -ones(n - 1), 1 => ones(n - 1)) / dx
     Dᵀ = transpose(D)
 
     # Construct antidifferentiation operator and its adjoint.
     A(x) = cumsum(x)
     
     function Aᵀ(x)
-        sum(x) .- [0; cumsum(x[1:end-1])]
+        sum(x) .- [0; cumsum(x[1:end - 1])]
     end
 
     # Precompute antidifferentiation adjoint on data
@@ -241,7 +261,7 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
         linop = LinearOperator(n, n, true, true, v -> α * L * v + Aᵀ(A(v)))
 
         # Solve linear equation.
-        s = cg(linop, -g; Pl=P, tol=cg_tol, maxiter=100)
+        s = cg(linop, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
         
         diag_flag && println("Iteration $(i):\trel. change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
 
