@@ -41,7 +41,7 @@
                 accurate results with sharper jumps.
 
 - `dx::Real`:    Grid spacing, used in the definition of the derivative
-                operators.  Default is the reciprocal of the data size.
+                operators.  Default is `data[2]-data[1]`.
 
 - `cg_tol::Real`:      
                 Tolerance used in conjugate gradient method. 
@@ -95,7 +95,7 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
 
     n = length(data)
     if isnan(dx)
-        dx = 1 / n
+        dx = data[2]-data[1]
     end
 
     # Assert preconditioner
