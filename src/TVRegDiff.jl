@@ -86,7 +86,7 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     preconditioner::String="cholesky",
     ε::Real=1e-6,
     dx::Real=NaN,
-    cg_tol::Real=1e-6,
+    cg_tol::Real=1e-4,
     cg_maxiter::Int=100,
     diag_flag::Bool=true,
     plot_flag::Bool=false,
@@ -160,8 +160,7 @@ function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
 
     for i = 1:iter
         # Diagonal matrix of weights, for linearizing E-L equation.
-        q = 1 ./ sqrt.((D * u).^2 .+ ε)
-        Q = spdiagm(n, n, 0 => q)
+        Q = Diagonal(1 ./ sqrt.((D * u).^2 .+ ε))
 
         # Linearized diffusion matrix, also approximation of Hessian.
         L = dx * Dᵀ * Q * D
@@ -170,7 +169,7 @@ function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
         g = Aᵀ(A(u)) + Aᵀb + α * L * u
 
         # Simple preconditioner.
-        P = α * spdiagm(n + 1, n + 1, 0 => diag(L) .+ 1)
+        P = Diagonal(α * diag(L) .+ 1)
 
         # Prepare linear operator for linear equation.        
         linop = LinearOperator(n + 1, n + 1, true, true, v -> α * L * v + Aᵀ(A(v)))
@@ -230,8 +229,7 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
 
     for i = 1:iter
         # Diagonal matrix of weights, for linearizing E-L equation.
-        q = 1 ./ sqrt.((D * u).^2 .+ ε)
-        Q = spdiagm(n, n, 0 => q)
+        Q = Diagonal(1 ./ sqrt.((D * u).^2 .+ ε))
 
         # Linearized diffusion matrix, also approximation of Hessian.
         L = Dᵀ * Q * D
@@ -240,8 +238,7 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
         g = Aᵀ(A(u)) - Aᵀd + α * L * u
 
         # Build preconditioner.
-        c = cumsum(n:-1:1)
-        B = α * L + spdiagm(n, n, 0 => reverse(c))
+        B = α * L + Diagonal(reverse(cumsum(n:-1:1)))
 
         if preconditioner == "cholesky"
             # Incomplete Cholesky preconditioner with cut-off level 2
