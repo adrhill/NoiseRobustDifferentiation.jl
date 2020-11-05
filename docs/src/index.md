@@ -15,6 +15,9 @@ Since the CG method from IterativeSolvers.jl allows for preconditioners, most of
 - `preconditioner`: Method used for preconditioning if `scale=\"large\"` is chosen.
 - `cg_tol`: Tolerance used in conjugate gradient method.
 
+### Other differences
+- added missing factor `dx` in definitons of `A` and `Aᵀ` for `scale=\"large\"`.
+
 ## Functions
 ```@docs
 TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real; kwargs...)

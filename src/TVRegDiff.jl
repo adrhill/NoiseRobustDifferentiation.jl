@@ -62,7 +62,7 @@
                 an early iterate being best is more worrying than a
                 large relative residual.
 
--`precond_flag::Bool`: 
+- `precond_flag::Bool`: 
                 Flag whether to use a preconditioner for conjugate gradient solution.
                 Default is `true`. While in principle it should speed things up, 
                 sometimes the preconditioner can cause convergence problems instead,
@@ -77,9 +77,8 @@
                 are available. Default is `\"amg_rs\"`.
 
 # Output
-- `u`:          Estimate of the regularized derivative of data.  Due to
-                different grid assumptions, `length(u) = length(data) + 1`
-                if `scale = \"small\"`, otherwise `length(u) = length(data)`.
+- `u`:          Estimate of the regularized derivative of data with 
+                `length(u) = length(data)`.
 """
 function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     u_0::Array{<:Real,1}=[NaN],
@@ -220,10 +219,10 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
     Dᵀ = transpose(D)
 
     # Construct antidifferentiation operator and its adjoint.
-    A(x) = cumsum(x)
+    A(x) = cumsum(x) * dx
     
     function Aᵀ(x)
-        sum(x) .- [0; cumsum(x[1:end - 1])]
+        sum(x) .- [0; cumsum(x[1:end - 1])] * dx
     end
 
     # Precompute antidifferentiation adjoint on data
@@ -246,7 +245,7 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
 
         if preconditioner == "cholesky"
             # Incomplete Cholesky preconditioner with cut-off level 2
-            P = CholeskyPreconditioner(B, 2) 
+            P = CholeskyPreconditioner(B, 2)
         elseif preconditioner == "diagonal"
             P = DiagonalPreconditioner(B)
         elseif preconditioner == "amg_rs"
