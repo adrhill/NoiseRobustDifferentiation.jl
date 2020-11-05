@@ -33,7 +33,7 @@ for pf in [true, false]
     @testset "precondflag=$(pf)" begin
         @testset "abs" begin
             @test _eval_small_noisy(abs, sign, precond_flag=pf, iter=1) < 0.3
-            @test _eval_small_noisy(abs, sign, precond_flag=pf, iter=10) < 0.2
+            @test _eval_small_noisy(abs, sign, precond_flag=pf, iter=10) < 0.25
         end
         @testset "sigmoid" begin
             σ(x) = exp(x) / (1 + exp(x))
@@ -44,7 +44,7 @@ for pf in [true, false]
         end
         @testset "sin" begin
             @test _eval_small_noisy(sin, cos, precond_flag=pf, iter=1) < 0.3
-            @test _eval_small_noisy(sin, cos, precond_flag=pf, iter=10) < 0.2
+            @test _eval_small_noisy(sin, cos, precond_flag=pf, iter=10) < 0.25
         end
     end
 end
