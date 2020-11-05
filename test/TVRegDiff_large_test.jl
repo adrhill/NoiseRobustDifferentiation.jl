@@ -35,18 +35,18 @@ end
 for pc in ["cholesky","diagonal","amg_rs","amg_sa"]
     @testset "$pc" begin
         @testset "abs" begin
-            @test _eval_large_noisy(abs, sign, preconditioner=pc, iter=1) < 0.3
+            @test _eval_large_noisy(abs, sign, preconditioner=pc, iter=2) < 0.3
             @test _eval_large_noisy(abs, sign, preconditioner=pc, iter=10) < 0.2
         end
         @testset "sigmoid" begin
             σ(x) = exp(x) / (1 + exp(x))
             dσdx(x) = σ(x) - exp(2 * x) / (1 + exp(x)^2)
 
-            @test _eval_large_noisy(σ, dσdx, preconditioner=pc, iter=1) < 0.3
+            @test _eval_large_noisy(σ, dσdx, preconditioner=pc, iter=2) < 0.3
             @test _eval_large_noisy(σ, dσdx, preconditioner=pc, iter=10) < 0.2   
         end
         @testset "sin" begin
-            @test _eval_large_noisy(sin, cos, preconditioner=pc, iter=1) < 0.3
+            @test _eval_large_noisy(sin, cos, preconditioner=pc, iter=2) < 0.3
             @test _eval_large_noisy(sin, cos, preconditioner=pc, iter=10) < 0.2
         end     
     end
