@@ -3,83 +3,83 @@
 
 # Arguments
 - `data::Array{<:Real,1}`:    
-                Vector of data to be differentiated.
+    Vector of data to be differentiated.
 
-- `iter::Int`:  Number of iterations to run the main loop.  A stopping
-                condition based on the norm of the gradient vector `g`
-                below would be an easy modification.  No default value.
+- `iter::Int`:  
+    Number of iterations to run the main loop.  A stopping
+    condition based on the norm of the gradient vector `g`
+    below would be an easy modification.  No default value.
 
-- `α::Real`:    Regularization parameter.  This is the main parameter
-                to fiddle with.  Start by varying by orders of
-                magnitude until reasonable results are obtained.  A
-                value to the nearest power of 10 is usally adequate.
-                No default value.  Higher values increase
-                regularization strenght and improve conditioning.
+- `α::Real`:    
+    Regularization parameter.  This is the main parameter
+    to fiddle with.  Start by varying by orders of
+    magnitude until reasonable results are obtained.  A
+    value to the nearest power of 10 is usally adequate.
+    No default value.  Higher values increase
+    regularization strenght and improve conditioning.
 
 ## Keywords
 - `u_0::Array{<:Real,1}`:          
-                Initialization of the iteration.  Default value is the
-                naive derivative (without scaling), of appropriate
-                length (this being different for the two methods).
-                Although the solution is theoretically independent of
-                the intialization, a poor choice can exacerbate
-                conditioning issues when the linear system is solved.
+    Initialization of the iteration.  Default value is the
+    naive derivative (without scaling), of appropriate
+    length (this being different for the two methods).
+    Although the solution is theoretically independent of
+    the intialization, a poor choice can exacerbate
+    conditioning issues when the linear system is solved.
 
 - `scale::String`:
-                Scale of dataset, `\"large\"` or `\"small\"` (case insensitive).  
-                Default is `\"small\"` .  `\"small\"`  has somewhat better 
-                boundary behavior, but becomes unwieldly for very large datasets.  
-                `\"large\"` has simpler numerics but
-                is more efficient for large-scale problems.  `\"large\"` is
-                more readily modified for higher-order derivatives,
-                since the implicit differentiation matrix is square.
+    Scale of dataset, `\"large\"` or `\"small\"` (case insensitive).  
+    Default is `\"small\"` .  `\"small\"`  has somewhat better 
+    boundary behavior, but becomes unwieldly for very large datasets.  
+    `\"large\"` has simpler numerics but
+    is more efficient for large-scale problems.  `\"large\"` is
+    more readily modified for higher-order derivatives,
+    since the implicit differentiation matrix is square.
 
-- `ε::Real`:    Parameter for avoiding division by zero.  Default value
-                is `1e-6`.  Results should not be very sensitive to the
-                value.  Larger values improve conditioning and
-                therefore speed, while smaller values give more
-                accurate results with sharper jumps.
+- `ε::Real`:    
+    Parameter for avoiding division by zero.  Default value
+    is `1e-6`.  Results should not be very sensitive to the
+    value.  Larger values improve conditioning and
+    therefore speed, while smaller values give more
+    accurate results with sharper jumps.
 
-- `dx::Real`:   Grid spacing, used in the definition of the derivative
-                operators.  Default is `data[2]-data[1]`.
+- `dx::Real`:   
+    Grid spacing, used in the definition of the derivative
+    operators.  Default is `data[2]-data[1]`.
 
 - `precond::String`:  
-                Select the preconditioner for the conjugate gradient method.
-                Default is 'none'. 
-
-                - `scale = \"small\"`:
-                    While in principle `precond=\"simple\"` should speed things up, 
-                    sometimes the preconditioner can cause convergence problems instead,
-                    and should be left to `\"none\"`.
-
-                - `scale = \"large\"`:
-                    The improved preconditioners are one of the main features of the 
-                    algorithm, therefore using the default `\"none\"` is discouraged.
-                    Currently, `\"diagonal\"`,`\"amg_rs\"`,`\"amg_sa\"`, `\"cholesky\"`
-                    are available.
+    Select the preconditioner for the conjugate gradient method.
+    Default is 'none'.
+    - `scale = \"small\"`:
+        While in principle `precond=\"simple\"` should speed things up, 
+        sometimes the preconditioner can cause convergence problems instead,
+        and should be left to `\"none\"`.
+    - `scale = \"large\"`:
+        The improved preconditioners are one of the main features of the 
+        algorithm, therefore using the default `\"none\"` is discouraged.
+        Currently, `\"diagonal\"`,`\"amg_rs\"`,`\"amg_sa\"`, `\"cholesky\"`
+        are available.
 
 - `cg_tol::Real`:      
-                Tolerance used in conjugate gradient method. 
-                Default is `1e-4`.
+    Tolerance used in conjugate gradient method. Default is `1e-4`.
+
 - `cgmaxit::Int`:
-                Maximum number of iterations to use in conjugate gradient optimisation. 
-                Default is 100.
+    Maximum number of iterations to use in conjugate gradient optimisation. 
+    Default is 100.
 
 - `plot_flag::Bool`:    
-                Flag whether to display plot at each iteration.
-                Default is `false`.  Useful, but adds significant
-                running time.
+    Flag whether to display plot at each iteration. Default is `false`.  
+    Useful, but adds significant running time.
 
 - `diag_flag::Bool`:    
-                Flag whether to display diagnostics at each
-                iteration.  Default is `false`.  Useful for diagnosing
-                preconditioning problems.  When tolerance is not met,
-                an early iterate being best is more worrying than a
-                large relative residual.
+    Flag whether to display diagnostics at each iteration. Default is `false`.  
+    Useful for diagnosing preconditioning problems. When tolerance is not met,
+    an early iterate being best is more worrying than a large relative residual.
 
 # Output
-- `u`:          Estimate of the regularized derivative of data with 
-                `length(u) = length(data)`.
+- `u`:          
+    Estimate of the regularized derivative of data with 
+    `length(u) = length(data)`.
 """
 function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     u_0::Array{<:Real,1}=[NaN],
