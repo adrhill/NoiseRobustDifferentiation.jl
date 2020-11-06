@@ -1,4 +1,4 @@
-using Plots
+using Plots; pyplot()
 using LaTeXStrings
 
 function plot_example(x, f, data, u, u_diff, û)
