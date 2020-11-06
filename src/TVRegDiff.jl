@@ -45,7 +45,7 @@
 
 - `dx::Real`:   
     Grid spacing, used in the definition of the derivative
-    operators.  Default is `data[2]-data[1]`.
+    operators.  Default is `1 / length(data)`.
 
 - `precond::String`:  
     Select the preconditioner for the conjugate gradient method.
@@ -95,7 +95,7 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
 
     n = length(data)
     if isnan(dx)
-        dx = data[2]-data[1]
+        dx = 1 / n
     end
 
     # Run TVRegDiff for selected method
