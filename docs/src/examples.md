@@ -21,7 +21,7 @@ using NoiseRobustDifferentiation
 using Plots # hide
 include("plot_example.jl") # hide
 
-û = TVRegDiff(f_noisy, 10, 0.2, dx=dx, scale="small")
+û = TVRegDiff(f_noisy, 100, 0.2, dx=dx)
 nothing # hide
 ```
 
@@ -62,7 +62,7 @@ savefig("paper_small.svg"); nothing # hide
 Defaults mean that calling
 
 ```julia
-u = TVRegDiff(df.noisyabsdata, 500, 0.2 )
+u = TVRegDiff(df.noisyabsdata, 500, 0.2)
 ```
 
 would have the same results.
