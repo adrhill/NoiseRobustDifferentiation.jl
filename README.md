@@ -3,6 +3,8 @@
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/)
 [![Travis](https://travis-ci.com/adrhill/NoiseRobustDifferentiation.jl.svg?branch=main)](https://travis-ci.com/github/adrhill/NoiseRobustDifferentiation.jl)
 [![Coverage Status](https://coveralls.io/repos/github/adrhill/NoiseRobustDifferentiation.jl/badge.svg?branch=main)](https://coveralls.io/github/adrhill/NoiseRobustDifferentiation.jl?branch=main)
+[![codecov](https://codecov.io/gh/adrhill/NoiseRobustDifferentiation.jl/branch/main/graph/badge.svg?token=XU2YMDB83Z)](https://codecov.io/gh/adrhill/NoiseRobustDifferentiation.jl)
+
 
 Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVDiff) based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) with tests from [Simone Sturniolo's Python reimplementation](https://github.com/stur86/tvregdiff).
 
