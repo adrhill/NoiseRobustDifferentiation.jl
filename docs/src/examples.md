@@ -23,7 +23,7 @@ û = TVRegDiff(f_noisy, 10, 0.2, dx=dx, scale="small")
 ; nothing # hide
 ```
 
-We compare the results to the true derivative ``u(x)=sign(f)`` and naive finite differences using `diff(x) / dx`.
+We compare the results to the true derivative ``u(x)=sign(x)`` and naive finite differences using `diff(f) / dx`.
 ```@example abs_small
 u = sign.(x) # true derivative
 û_diff = diff(f_noisy) / dx  # FDM
@@ -95,7 +95,7 @@ savefig("paper_large_smooth.svg"); nothing # hide
 ![](paper_large_smooth.svg)
 
 
-A less smooth example -– similar to figure 8 –- can be obtained by lowering the regularization parameter to `α=1e-3`.
+A less smooth example – similar to figure 8 – can be obtained by lowering the regularization parameter to `α=1e-3`.
 
 ```@example paper_large
 TVRegDiff(df.largescaledata, 40, 1e-3, scale="large", precond="diagonal", ε=1e-6, plot_flag=true)
