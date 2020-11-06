@@ -29,6 +29,12 @@ end
     @test length(û) == n # output dim should equal input dim
 end
 
+@testset "Broken inputs" begin
+        @test_throws ArgumentError TVRegDiff([0, 1, 2], 1, 0.1, scale="large", precond="bad_input")
+        @test_throws ArgumentError TVRegDiff([0, 1, 2], 1, 0.1, scale="l4rge")
+        @test_throws DimensionMismatch TVRegDiff([0, 1, 2], 1, 0.1, u_0=[1,2,3,4], scale="large")
+end
+
 @testset "preconditioners" begin
     for precond in ["cholesky","diagonal","amg_rs","amg_sa","none"]
         @testset "$precond" begin
