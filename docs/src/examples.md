@@ -18,12 +18,11 @@ and then call `TVRegDiff` using a regularization parameter of `α=0.2` for 10 it
 
 ```@example abs_small
 using NoiseRobustDifferentiation
-using Plots; pyplot() # hide
+using Plots # hide
 include("plot_example.jl") # hide
 
-
 û = TVRegDiff(f_noisy, 10, 0.2, dx=dx, scale="small")
-; nothing # hide
+nothing # hide
 ```
 
 We compare the results to the true derivative ``u(x)=sign(x)`` and naive finite differences using `diff(f) / dx`.
@@ -49,7 +48,7 @@ The small-scale example in figure 1 is a more noisy variant of our first example
 ```@example paper_small
 using NoiseRobustDifferentiation
 using CSV, DataFrames
-using Plots; pyplot() # hide
+using Plots # hide
 
 file = CSV.File("../data/demo_small.csv")
 df = DataFrame(file)
@@ -85,7 +84,7 @@ This should resemble figure 9.
 ```@example paper_large
 using NoiseRobustDifferentiation
 using CSV, DataFrames
-using Plots; pyplot() # hide
+using Plots # hide
 
 file = CSV.File("../data/demo_large.csv")
 df = DataFrame(file)
