@@ -110,7 +110,7 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     end
 
     # Display plot
-    plot_flag && _plot_diff(data, u)
+    plot_flag && _plot_diff(data, u, dx)
 
     return u
 end
