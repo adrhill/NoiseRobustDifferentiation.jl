@@ -1,11 +1,12 @@
 # NoiseRobustDifferentiation.jl
 
-| **Documentation**                       | **Build Status**                          | **Code Coverage**                                                  |
-|:---------------------------------------:|:-----------------------------------------:|:------------------------------------------------------------------:|
-| [![][docs-latest-img]][docs-latest-url] | [![Build Status][travis-img]][travis-url] | [![][coveralls-img]][coveralls-url][![][codecov-img]][codecov-url] |
+| **Documentation**                       | **Build Status**                          | **Code Coverage**                                                   |
+|:---------------------------------------:|:-----------------------------------------:|:-------------------------------------------------------------------:|
+| [![][docs-latest-img]][docs-latest-url] | [![Build Status][travis-img]][travis-url] | [![][coveralls-img]][coveralls-url] [![][codecov-img]][codecov-url] |
 
 
-Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVDiff) based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) and [Simone Sturniolo's Python reimplementation](https://github.com/stur86/tvregdiff).
+Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVDiff).
+Based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) and [Simone Sturniolo's Python reimplementation](https://github.com/stur86/tvregdiff).
 
 ## Example
 
@@ -22,7 +23,7 @@ Please cite the following paper if you use this code in published work:
 
 
 [docs-latest-img]: https://img.shields.io/badge/docs-dev-blue.svg
-[docs-latest-url]: https://juliaphysics.github.io/Measurements.jl/dev/
+[docs-latest-url]: https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/
 
 [travis-img]: https://travis-ci.com/adrhill/NoiseRobustDifferentiation.jl.svg?branch=main
 [travis-url]: https://travis-ci.com/github/adrhill/NoiseRobustDifferentiation.jl
