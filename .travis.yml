@@ -1,5 +1,10 @@
 language: julia
 
+os:
+  - linux
+julia:
+  - 1.5
+  - nightly
 notifications:
   email: false
 
@@ -16,3 +21,5 @@ jobs:
         - julia --color=yes --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
         - julia --color=yes --project=docs/ docs/make.jl
       after_success: skip
+  allow-failures:
+    - julia: nightly
