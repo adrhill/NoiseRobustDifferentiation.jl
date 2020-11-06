@@ -4,7 +4,11 @@ using NoiseRobustDifferentiation
 makedocs(
     sitename = "NoiseRobustDifferentiation",
     format = Documenter.HTML(),
-    modules = [NoiseRobustDifferentiation]
+    modules = [NoiseRobustDifferentiation],
+    pages = [
+        "Home"      => "index.md",
+        "Examples"  => "examples.md"
+    ]
 )
 
 deploydocs(
