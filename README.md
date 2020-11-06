@@ -13,7 +13,7 @@ Based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/d
 ```julia
 u = TVRegDiff(f, 7000, 0.2, scale="small", ε=1e-6, dx=0.01, plot_flag=true)
 ```
-![](paper_small7000.svg)
+![](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/paper_small7000.svg)
 
 [More examples can be found in the documentation.](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/examples/)
 
