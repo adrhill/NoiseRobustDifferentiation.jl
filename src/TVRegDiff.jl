@@ -46,10 +46,12 @@
 - `precond::String`:  
                 Select the preconditioner for the conjugate gradient method.
                 Default is 'none'. 
+
                 - `scale = \"small\"`:
                     While in principle `precond=\"simple\"` should speed things up, 
                     sometimes the preconditioner can cause convergence problems instead,
                     and should be left to `\"none\"`.
+
                 - `scale = \"large\"`:
                     The improved preconditioners are one of the main features of the 
                     algorithm, therefore using the default `\"none\"` is discouraged.
@@ -58,19 +60,19 @@
 
 - `cg_tol::Real`:      
                 Tolerance used in conjugate gradient method. 
-                Default is `1e-6`.
+                Default is `1e-4`.
 - `cgmaxit::Int`:
                 Maximum number of iterations to use in conjugate gradient optimisation. 
                 Default is 100.
 
 - `plot_flag::Bool`:    
                 Flag whether to display plot at each iteration.
-                Default is `true`.  Useful, but adds significant
+                Default is `false`.  Useful, but adds significant
                 running time.
 
 - `diag_flag::Bool`:    
                 Flag whether to display diagnostics at each
-                iteration.  Default is `true`.  Useful for diagnosing
+                iteration.  Default is `false`.  Useful for diagnosing
                 preconditioning problems.  When tolerance is not met,
                 an early iterate being best is more worrying than a
                 large relative residual.
