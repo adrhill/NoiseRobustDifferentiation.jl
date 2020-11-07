@@ -6,6 +6,7 @@
 
 
 Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVDiff).
+
 Based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) and [Simone Sturniolo's Python reimplementation](https://github.com/stur86/tvregdiff).
 
 ## Example
@@ -13,7 +14,7 @@ Based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/d
 ![](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/paper_small7000.svg)
 
 ```julia
-u = TVRegDiff(f, 7000, 0.2, dx=0.01, plot_flag=true)
+û = TVRegDiff(f, 7000, 0.2, dx=0.01, plot_flag=true)
 ```
 
 [More examples can be found in the documentation.](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/examples/)
