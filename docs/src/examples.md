@@ -14,7 +14,7 @@ f_noisy = f + 0.05 * (rand(n) .- 0.5)
 ; nothing # hide
 ```
 
-and then call `TVRegDiff` using a regularization parameter of `α=0.2` for 10 iterations
+and then call `TVRegDiff` using a regularization parameter of `α=0.2` for 100 iterations
 
 ```@example abs_small
 using NoiseRobustDifferentiation
@@ -25,7 +25,7 @@ û = TVRegDiff(f_noisy, 100, 0.2, dx=dx)
 nothing # hide
 ```
 
-We compare the results to the true derivative ``u(x)=sign(x)`` and naive finite differences using `diff(f) / dx`.
+We compare the results to the true derivative ``u(x)=sign(x)`` and a naive implementation of finite differences.
 ```@example abs_small
 u = sign.(x) # true derivative
 û_diff = diff(f_noisy) / dx  # FDM
@@ -43,7 +43,7 @@ Let's now reconstruct the figures from Rick Chartrand's paper *"Numerical differ
 The corresponding datasets can be found under `/docs/data`.
 
 ### Small-scale example
-The small-scale example in figure 1 is a more noisy variant of our first example.
+The small-scale example in the paper is a more noisy variant of our first example.
 
 ```@example paper_small
 using NoiseRobustDifferentiation
@@ -53,24 +53,22 @@ using Plots # hide
 file = CSV.File("../data/demo_small.csv")
 df = DataFrame(file)
 
-TVRegDiff(df.noisyabsdata, 500, 0.2, scale="small", ε=1e-6, dx=0.01, plot_flag=true)
+TVRegDiff(df.noisyabsdata, 500, 0.2, scale="small", dx=0.01, ε=1e-6, plot_flag=true)
 savefig("paper_small.svg"); nothing # hide
 ```
 
 ![](paper_small.svg)
 
-Defaults mean that calling
+Because of keyword argument defaults, this is equal to calling
 
 ```julia
-u = TVRegDiff(df.noisyabsdata, 500, 0.2)
+TVRegDiff(df.noisyabsdata, 500, 0.2)
 ```
-
-would have the same results.
 
 A better result is obtained after 7000 iterations, though differences are minimal.
 
 ```@example paper_small
-TVRegDiff(df.noisyabsdata, 7000, 0.2, scale="small", ε=1e-6, dx=0.01, plot_flag=true)
+TVRegDiff(df.noisyabsdata, 7000, 0.2, plot_flag=true)
 savefig("paper_small7000.svg"); nothing # hide
 ```
 
@@ -79,7 +77,6 @@ savefig("paper_small7000.svg"); nothing # hide
 ### Large-scale example
 
 First we use parameters that lead to a very smooth result: notably a high regularization parameter `α=1e-1`.
-This should resemble figure 9.
 
 ```@example paper_large
 using NoiseRobustDifferentiation
@@ -96,7 +93,7 @@ savefig("paper_large_smooth.svg"); nothing # hide
 ![](paper_large_smooth.svg)
 
 
-A less smooth example – similar to figure 8 – can be obtained by lowering the regularization parameter to `α=1e-3`.
+A less smooth example can be obtained by lowering the regularization parameter to `α=1e-3`.
 
 ```@example paper_large
 TVRegDiff(df.largescaledata, 40, 1e-3, scale="large", precond="diagonal", ε=1e-6, plot_flag=true)
