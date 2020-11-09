@@ -53,7 +53,7 @@ using Plots # hide
 file = CSV.File("../data/demo_small.csv")
 df = DataFrame(file)
 
-TVRegDiff(df.noisyabsdata, 500, 0.2, scale="small", dx=0.01, ε=1e-6, plot_flag=true)
+TVRegDiff(df.noisyabsdata, 500, 0.2, scale="small", dx=0.01, ε=1e-6, show_plot=true)
 savefig("paper_small.svg"); nothing # hide
 ```
 
@@ -68,7 +68,7 @@ TVRegDiff(df.noisyabsdata, 500, 0.2)
 A better result is obtained after 7000 iterations, though differences are minimal.
 
 ```@example paper_small
-TVRegDiff(df.noisyabsdata, 7000, 0.2, plot_flag=true)
+TVRegDiff(df.noisyabsdata, 7000, 0.2, show_plot=true)
 savefig("paper_small7000.svg"); nothing # hide
 ```
 
@@ -86,7 +86,7 @@ using Plots # hide
 file = CSV.File("../data/demo_large.csv")
 df = DataFrame(file)
 
-TVRegDiff(df.largescaledata, 40, 1e-1, scale="large", precond="diagonal", ε=1e-8, plot_flag=true)
+TVRegDiff(df.largescaledata, 40, 1e-1, scale="large", precond="diagonal", ε=1e-8, show_plot=true)
 savefig("paper_large_smooth.svg"); nothing # hide
 ```
 
@@ -96,7 +96,7 @@ savefig("paper_large_smooth.svg"); nothing # hide
 A less smooth example can be obtained by lowering the regularization parameter to `α=1e-3`.
 
 ```@example paper_large
-TVRegDiff(df.largescaledata, 40, 1e-3, scale="large", precond="diagonal", ε=1e-6, plot_flag=true)
+TVRegDiff(df.largescaledata, 40, 1e-3, scale="large", precond="diagonal", ε=1e-6, show_plot=true)
 savefig("paper_large_jump.svg"); nothing # hide
 ```
 

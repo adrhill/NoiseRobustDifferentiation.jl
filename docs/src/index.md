@@ -26,6 +26,7 @@ Since the CG method from IterativeSolvers.jl allows for preconditioners, most of
 
 ### Other differences
 - added missing factor `dx` in definitons of `A` and `Aᵀ` for scale `"large"`.
+- `plot_flag` and `diag_flag` have been renamed to `show_plot` and `show_diagn`
 
 ## Citation
 Please cite the following paper if you use this code in published work:

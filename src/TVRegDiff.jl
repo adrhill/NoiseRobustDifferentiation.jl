@@ -67,11 +67,11 @@
     Maximum number of iterations to use in conjugate gradient optimisation. 
     Default is 100.
 
-- `plot_flag::Bool`:    
+- `show_plot::Bool`:    
     Flag whether to display plot at each iteration. Default is `false`.  
     Useful, but adds significant running time.
 
-- `diag_flag::Bool`:    
+- `show_diagn::Bool`:    
     Flag whether to display diagnostics at each iteration. Default is `false`.  
     Useful for diagnosing preconditioning problems. When tolerance is not met,
     an early iterate being best is more worrying than a large relative residual.
@@ -89,8 +89,8 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     precond::String="none",
     cg_tol::Real=1e-4,
     cg_maxiter::Int=100,
-    diag_flag::Bool=false,
-    plot_flag::Bool=false,
+    show_diagn::Bool=false,
+    show_plot::Bool=false,
     )
 
     n = length(data)
@@ -102,15 +102,15 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     precond = lowercase(precond)
     scale = lowercase(scale)
     if scale == "small"
-        u = _TVRegDiff_small(data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, diag_flag)
+        u = _TVRegDiff_small(data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, show_diagn)
     elseif scale == "large"
-        u = _TVRegDiff_large(data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, diag_flag)
+        u = _TVRegDiff_large(data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, show_diagn)
     else
         throw(ArgumentError("in keyword argument scale, expected  \"large\" or \"small\", got \"$(scale)\""))
     end
 
     # Display plot
-    plot_flag && _plot_diff(data, u, dx)
+    show_plot && _plot_diff(data, u, dx)
 
     return u
 end
@@ -122,7 +122,7 @@ function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
     cg_tol::Real,
     cg_maxiter::Int,
     precond::String,
-    diag_flag::Bool,
+    show_diagn::Bool,
     )
 
     n = length(data)
@@ -180,7 +180,7 @@ function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
         # Solve linear equation.
         s = cg(linop, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
 
-        diag_flag && println("Iteration $(i):\trel. change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
+        show_diagn && println("Iteration $(i):\trel. change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
 
         # Update current solution
         u += s
@@ -195,7 +195,7 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
     cg_tol::Real,
     cg_maxiter::Int,
     precond::String,
-    diag_flag::Bool,
+    show_diagn::Bool,
     )
 
     n = length(data)
@@ -262,7 +262,7 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
         # Solve linear equation.
         s = cg(linop, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
         
-        diag_flag && println("Iteration $(i):\trel. change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
+        show_diagn && println("Iteration $(i):\trel. change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
 
         # Update current solution
         u += s
