@@ -2,7 +2,7 @@ using Documenter
 using NoiseRobustDifferentiation
 
 makedocs(
-    sitename = "NoiseRobustDifferentiation",
+    sitename = "NoiseRobustDifferentiation.jl",
     format = Documenter.HTML(),
     modules = [NoiseRobustDifferentiation],
     pages = [

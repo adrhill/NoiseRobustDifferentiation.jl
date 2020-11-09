@@ -1,6 +1,8 @@
 # NoiseRobustDifferentiation.jl
 
-Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVDiff) based on [Rick Chartrand's original MATLAB code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) with small changes and tests from [Simone Sturniolo's Python reimplementation](https://github.com/stur86/tvregdiff).
+Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVDiff).
+
+Based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) and [Simone Sturniolo's Python reimplementation](https://github.com/stur86/tvregdiff).
 
 ```@contents
 Pages = ["index.md", "examples.md"]
