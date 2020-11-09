@@ -3,12 +3,10 @@ using Random
 using Statistics
 using Test
 
-using Plots
-using LaTeXStrings
-
 # Include testing functions
 include("dimension_test.jl")
 include("symbolic_function_test.jl")
+include("demo_large_test.jl")
 
 @testset "Dimensions" begin
     _test_output_dim("small")
@@ -23,5 +21,17 @@ end
 @testset "Preconditioners" begin
     for precond in ["simple","none"]
         _testset_symbolic_functions(precond, "small")
+    end
+end
+
+@testset "Demo large" begin
+    # Load data
+    using CSV, DataFrames
+    file = CSV.File("./data/demo_large.csv")
+    data_large = DataFrame(file).largescaledata
+    
+    # # Run tests
+    for precond in ["simple","none"]
+        _testset_demo_large(data_large, "small", precond)
     end
 end
