@@ -67,7 +67,7 @@
     derivatives, whereas the absolute values tends to make them more blocky.
 
 - `cg_tol::Real`:      
-    Tolerance used in conjugate gradient method. Default is `1e-4`.
+    Tolerance used in conjugate gradient method. Default is `1e-6`.
 
 - `cgmaxit::Int`:
     Maximum number of iterations to use in conjugate gradient optimisation. 
@@ -94,7 +94,7 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     dx::Real=NaN,
     precond::String="none",
     diff_kernel::String="abs",
-    cg_tol::Real=1e-4,
+    cg_tol::Real=1e-6,
     cg_maxiter::Int=100,
     show_diagn::Bool=false,
     show_plot::Bool=false,
@@ -177,7 +177,6 @@ function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
         # Gradient of functional.
         g = Aᵀ(A(u)) + Aᵀb + α * L * u
 
-
         # Select preconditioner.
         if precond == "simple"
             P = Diagonal(α * diag(L) .+ 1)
@@ -187,11 +186,12 @@ function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
             throw(ArgumentError("unexpected input \"$(precond)\" in keyword argument precond for scale=\"small\""))
         end
     
-        # Prepare linear operator for linear equation.        
-        linop = LinearMap(v -> α * L * v + Aᵀ(A(v)), n+1, n+1)
+        # Prepare linear operator for linear equation.
+        # Approximation of Hessian of TVR functional at u
+        H = LinearMap(u -> Aᵀ(A(u)) + α * L * u , n+1, n+1)
 
         # Solve linear equation.
-        s = cg(linop, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
+        s = cg(H, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
 
         show_diagn && println("Iteration $(i):\trel. change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
 
@@ -275,11 +275,12 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
             throw(ArgumentError("unexpected input \"$(precond)\" in keyword argument precond for scale=\"large\""))
         end
 
-        # Prepare linear operator for linear equation.        
-        linop = LinearMap(v -> α * L * v + Aᵀ(A(v)), n, n)
+        # Prepare linear operator for linear equation.
+        # Approximation of Hessian of TVR functional at u
+        H = LinearMap(u -> Aᵀ(A(u)) + α * L * u , n, n)
 
         # Solve linear equation.
-        s = cg(linop, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
+        s = cg(H, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
         
         show_diagn && println("Iteration $(i):\trel. change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))")
 

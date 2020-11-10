@@ -39,7 +39,8 @@ end
 
 function _testset_symbolic_functions(scale, preconds, diff_kernels)
     @testset "Symbolic fcs" begin 
-        for precond in preconds @testset "$precond" begin
+        for precond in preconds 
+            @testset "$precond" begin
                 for diff_kernel in diff_kernels
                     @testset "$diff_kernel" begin
                         _test_symbolic_functions(scale, precond, diff_kernel)
