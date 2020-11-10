@@ -5,7 +5,7 @@ using LaTeXStrings
 using LinearAlgebra
 using SparseArrays
 using Preconditioners
-using LinearOperators
+using LinearMaps
 using IterativeSolvers
 
 include("plotting.jl")

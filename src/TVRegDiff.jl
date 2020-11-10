@@ -60,6 +60,12 @@
         Currently, `\"diagonal\"`,`\"amg_rs\"`,`\"amg_sa\"`, `\"cholesky\"`
         are available.
 
+- `diff_kernel::String`:
+    Kernel to use in the integral to smooth the derivative. By default it's `\"abs\"`, 
+    the absolute value ``|u'|``. However, it can be changed to `\"square\"`,
+    the square value ``(u')^2``. The latter produces smoother
+    derivatives, whereas the absolute values tends to make them more blocky.
+
 - `cg_tol::Real`:      
     Tolerance used in conjugate gradient method. Default is `1e-4`.
 
@@ -87,6 +93,7 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     ε::Real=1e-6,
     dx::Real=NaN,
     precond::String="none",
+    diff_kernel::String="abs",
     cg_tol::Real=1e-4,
     cg_maxiter::Int=100,
     show_diagn::Bool=false,
@@ -102,9 +109,9 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     precond = lowercase(precond)
     scale = lowercase(scale)
     if scale == "small"
-        u = _TVRegDiff_small(data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, show_diagn)
+        u = _TVRegDiff_small(data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, diff_kernel, show_diagn)
     elseif scale == "large"
-        u = _TVRegDiff_large(data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, show_diagn)
+        u = _TVRegDiff_large(data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, diff_kernel, show_diagn)
     else
         throw(ArgumentError("in keyword argument scale, expected  \"large\" or \"small\", got \"$(scale)\""))
     end
@@ -122,6 +129,7 @@ function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
     cg_tol::Real,
     cg_maxiter::Int,
     precond::String,
+    diff_kernel::String,
     show_diagn::Bool,
     )
 
@@ -155,11 +163,16 @@ function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
     Aᵀb = Aᵀ(offset .- data)
 
     for i = 1:iter
-        # Diagonal matrix of weights, for linearizing E-L equation.
-        Q = Diagonal(1 ./ sqrt.((D * u).^2 .+ ε))
-
-        # Linearized diffusion matrix, also approximation of Hessian.
-        L = dx * Dᵀ * Q * D
+        if diff_kernel == "abs"
+            # Diagonal matrix of weights, for linearizing E-L equation.
+            Q = Diagonal(1 ./ sqrt.((D * u).^2 .+ ε))
+            # Linearized diffusion matrix, also approximation of Hessian.
+            L = dx * Dᵀ * Q * D
+        elseif diff_kernel == "square"
+            L = dx * Dᵀ * D
+        else 
+            throw(ArgumentError("unexpected input \"$(diff_kernel)\" in keyword argument diff_kernel for scale=\"small\""))
+        end
 
         # Gradient of functional.
         g = Aᵀ(A(u)) + Aᵀb + α * L * u
@@ -175,7 +188,7 @@ function _TVRegDiff_small(data::Array{<:Real,1}, iter::Int, α::Real,
         end
     
         # Prepare linear operator for linear equation.        
-        linop = LinearOperator(n + 1, n + 1, true, true, v -> α * L * v + Aᵀ(A(v)))
+        linop = LinearMap(v -> α * L * v + Aᵀ(A(v)), n+1, n+1)
 
         # Solve linear equation.
         s = cg(linop, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
@@ -195,6 +208,7 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
     cg_tol::Real,
     cg_maxiter::Int,
     precond::String,
+    diff_kernel::String,
     show_diagn::Bool,
     )
 
@@ -227,11 +241,16 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
     Aᵀd = Aᵀ(data)
 
     for i = 1:iter
-        # Diagonal matrix of weights, for linearizing E-L equation.
-        Q = Diagonal(1 ./ sqrt.((D * u).^2 .+ ε))
-
-        # Linearized diffusion matrix, also approximation of Hessian.
-        L = Dᵀ * Q * D
+        if diff_kernel == "abs"
+            # Diagonal matrix of weights, for linearizing E-L equation.
+            Q = Diagonal(1 ./ sqrt.((D * u).^2 .+ ε))
+            # Linearized diffusion matrix, also approximation of Hessian.
+            L = Dᵀ * Q * D
+        elseif diff_kernel == "square"
+            L = Dᵀ * D
+        else 
+            throw(ArgumentError("unexpected input \"$(diff_kernel)\" in keyword argument diff_kernel for scale=\"large\""))
+        end
 
         # Gradient of functional.
         g = Aᵀ(A(u)) - Aᵀd + α * L * u
@@ -257,7 +276,7 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
         end
 
         # Prepare linear operator for linear equation.        
-        linop = LinearOperator(n, n, true, true, v -> α * L * v + Aᵀ(A(v)))
+        linop = LinearMap(v -> α * L * v + Aᵀ(A(v)), n, n)
 
         # Solve linear equation.
         s = cg(linop, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
