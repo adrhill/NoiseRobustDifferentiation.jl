@@ -1,6 +1,4 @@
 module NoiseRobustDifferentiation
-using Plots
-using LaTeXStrings
 
 using LinearAlgebra
 using SparseArrays

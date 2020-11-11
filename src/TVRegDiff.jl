@@ -73,10 +73,6 @@
     Maximum number of iterations to use in conjugate gradient optimisation. 
     Default is 100.
 
-- `show_plot::Bool`:    
-    Flag whether to display plot at each iteration. Default is `false`.  
-    Useful, but adds significant running time.
-
 - `show_diagn::Bool`:    
     Flag whether to display diagnostics at each iteration. Default is `false`.  
     Useful for diagnosing preconditioning problems. When tolerance is not met,
@@ -97,7 +93,6 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     cg_tol::Real=1e-6,
     cg_maxiter::Int=100,
     show_diagn::Bool=false,
-    show_plot::Bool=false,
     )
 
     n = length(data)
@@ -115,9 +110,6 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
     else
         throw(ArgumentError("in keyword argument scale, expected  \"large\" or \"small\", got \"$(scale)\""))
     end
-
-    # Display plot
-    show_plot && _plot_diff(data, u, dx)
 
     return u
 end
