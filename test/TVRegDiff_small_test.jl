@@ -10,7 +10,6 @@ include("demo_large_test.jl")
 
 _testset_output_dim("small")
 _testset_symbolic_functions("small", ["simple", "none"], ["abs","square"])
-# _testset_demo_large("small", ["simple"], ["abs"]) # dataset is too large to work without simple preconditioner
 
 @testset "Broken inputs" begin
     @test_throws ArgumentError TVRegDiff([0, 1, 2], 1, 0.1, scale="small", precond="bad_input")
