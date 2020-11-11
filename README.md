@@ -5,17 +5,16 @@
 | [![][docs-latest-img]][docs-latest-url] | [![Build Status][travis-img]][travis-url] | [![][coveralls-img]][coveralls-url] [![][codecov-img]][codecov-url] |
 
 
-Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVDiff).
+Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVRegDiff).
 
 Based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) and [Simone Sturniolo's Python reimplementation](https://github.com/stur86/tvregdiff).
 
 ## Example
-
+`TVRegDiff` works on noisy data without suppressing jump discontinuities
 ![](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/paper_small7000.svg)
 
-```julia
-û = TVRegDiff(f, 7000, 0.2, dx=0.01, show_plot=true)
-```
+and also works on large datasets:
+![](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/paper_large_all.svg)
 
 [More examples can be found in the documentation.](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/examples/)
 
