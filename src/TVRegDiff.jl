@@ -102,7 +102,7 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
 
     n = length(data)
     if isnan(dx)
-        dx = 1 / n
+        dx = 1 / (n - 1)
     end
 
     # Run TVRegDiff for selected method
@@ -224,17 +224,17 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
     elseif length(u_0) != n
         throw(DimensionMismatch("in keyword argument u_0, size $(size(u_0)) of intialization doesn't match size ($(n),) required for scale=\"large\"."))
     end
-    u = copy(u_0)
+    u = copy(u_0) * dx
     
     # Construct differentiation matrix.
     D = spdiagm(n, n, 0 => -ones(n - 1), 1 => ones(n - 1)) / dx
     Dᵀ = transpose(D)
 
     # Construct antidifferentiation operator and its adjoint.
-    A(x) = cumsum(x) * dx
+    A(x) = cumsum(x)
     
     function Aᵀ(x)
-        sum(x) .- [0; cumsum(x[1:end - 1])] * dx
+        sum(x) .- [0; cumsum(x[1:end - 1])]
     end
 
     # Precompute antidifferentiation adjoint on data
@@ -287,5 +287,5 @@ function _TVRegDiff_large(data::Array{<:Real,1}, iter::Int, α::Real,
         # Update current solution
         u += s
     end
-    return u
+    return u / dx
 end

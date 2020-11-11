@@ -25,7 +25,6 @@ Since the CG method from IterativeSolvers.jl allows for preconditioners, most of
 - `cg_tol`: Tolerance used in conjugate gradient method.
 
 ### Other differences
-- added missing factor `dx` in definitons of `A` and `Aᵀ` for scale `"large"`.
 - `plot_flag` and `diag_flag` have been renamed to `show_plot` and `show_diagn`
 
 ## Citation
