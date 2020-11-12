@@ -2,7 +2,7 @@
 
 | **Documentation**                       | **Build Status**                          | **Code Coverage**               |
 |:---------------------------------------:|:-----------------------------------------:|:-------------------------------:|
-| [![][docs-latest-img]][docs-latest-url] | [![Build Status][travis-img]][travis-url] | [![][codecov-img]][codecov-url] |
+| [![][docs-latest-img]][docs-latest-url] | [![Build Status][ci-img]][ci-url] | [![][codecov-img]][codecov-url] |
 
 
 Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVRegDiff).
