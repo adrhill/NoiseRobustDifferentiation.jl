@@ -26,8 +26,8 @@ Please cite the following paper if you use this code in published work:
 [docs-latest-img]: https://img.shields.io/badge/docs-dev-blue.svg
 [docs-latest-url]: https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/
 
-[travis-img]: https://travis-ci.com/adrhill/NoiseRobustDifferentiation.jl.svg?branch=main
-[travis-url]: https://travis-ci.com/github/adrhill/NoiseRobustDifferentiation.jl
+[ci-img]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/workflows/CI/badge.svg
+[ci-url]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/actions?query=workflow%3ACI
 
 [codecov-img]: https://codecov.io/gh/adrhill/NoiseRobustDifferentiation.jl/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/adrhill/NoiseRobustDifferentiation.jl
