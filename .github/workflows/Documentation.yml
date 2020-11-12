@@ -16,8 +16,6 @@ jobs:
           # Build documentation on Julia 1.0
           version: '1.5'
       - name: Install dependencies
-        env:
-          GKSwstype: 100  # For GR plots
         run: |
           sudo apt-get install libxt6 libxrender1 libxext6 libgl1-mesa-glx libqt5widgets5 
           julia --color=yes --project=docs/ -e '
@@ -26,6 +24,7 @@ jobs:
             Pkg.instantiate()'
       - name: Build and deploy
         env:
+          GKSwstype: 100  # For GR plots
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }} # For authentication with SSH deploy key
         run: julia --color=yes --project=docs/ docs/make.jl
