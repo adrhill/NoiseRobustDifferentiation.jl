@@ -14,7 +14,7 @@ Based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/d
 ![](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/paper_small7000.svg)
 
 and also works on large datasets
-![](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/paper_large_all.svg)
+![](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/paper_large_all.png)
 
 [More examples can be found in the documentation.](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/examples/)
 
