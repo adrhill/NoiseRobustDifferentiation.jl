@@ -1,19 +1,19 @@
 # NoiseRobustDifferentiation.jl
 
-| **Documentation**                       | **Build Status**                          | **Code Coverage**                                                   |
-|:---------------------------------------:|:-----------------------------------------:|:-------------------------------------------------------------------:|
-| [![][docs-latest-img]][docs-latest-url] | [![Build Status][travis-img]][travis-url] | [![][coveralls-img]][coveralls-url] [![][codecov-img]][codecov-url] |
+| **Documentation**                       | **Build Status**                          | **Code Coverage**               |
+|:---------------------------------------:|:-----------------------------------------:|:-------------------------------:|
+| [![][docs-latest-img]][docs-latest-url] | [![Build Status][travis-img]][travis-url] | [![][codecov-img]][codecov-url] |
 
 
 Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVRegDiff).
 
 Based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) and [Simone Sturniolo's Python reimplementation](https://github.com/stur86/tvregdiff).
 
-## Example
+## Examples
 `TVRegDiff` works on noisy data without suppressing jump discontinuities
 ![](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/paper_small7000.svg)
 
-and also works on large datasets:
+and also works on large datasets
 ![](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/paper_large_all.svg)
 
 [More examples can be found in the documentation.](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/examples/)
@@ -28,9 +28,6 @@ Please cite the following paper if you use this code in published work:
 
 [travis-img]: https://travis-ci.com/adrhill/NoiseRobustDifferentiation.jl.svg?branch=main
 [travis-url]: https://travis-ci.com/github/adrhill/NoiseRobustDifferentiation.jl
-
-[coveralls-img]: https://coveralls.io/repos/github/adrhill/NoiseRobustDifferentiation.jl/badge.svg?branch=main
-[coveralls-url]: https://coveralls.io/github/adrhill/NoiseRobustDifferentiation.jl?branch=main
 
 [codecov-img]: https://codecov.io/gh/adrhill/NoiseRobustDifferentiation.jl/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/adrhill/NoiseRobustDifferentiation.jl
