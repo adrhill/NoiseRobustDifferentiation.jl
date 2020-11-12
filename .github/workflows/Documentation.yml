@@ -18,8 +18,12 @@ jobs:
       - name: Install dependencies
         env:
           GKSwstype: 100  # For GR plots
-        run: sudo apt-get install libxt6 libxrender1 libxext6 libgl1-mesa-glx libqt5widgets5 # Plots in docs: use GR with Travis
-        run: julia --color=yes --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
+        run: |
+          sudo apt-get install libxt6 libxrender1 libxext6 libgl1-mesa-glx libqt5widgets5 
+          julia --color=yes --project=docs/ -e '
+            using Pkg; 
+            Pkg.develop(PackageSpec(path=pwd())); 
+            Pkg.instantiate()'
       - name: Build and deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
