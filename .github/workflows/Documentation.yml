@@ -14,7 +14,7 @@ jobs:
       - uses: julia-actions/setup-julia@latest
         with:
           # Build documentation on Julia 1.0
-          version: '1.0'
+          version: '1.5'
       - name: Install dependencies
         env:
           GKSwstype: 100  # For GR plots
