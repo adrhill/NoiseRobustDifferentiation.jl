@@ -8,15 +8,15 @@
 - `iter::Int`:  
     Number of iterations to run the main loop.  A stopping
     condition based on the norm of the gradient vector `g`
-    below would be an easy modification.  No default value.
+    below would be an easy modification.
 
 - `α::Real`:    
     Regularization parameter.  This is the main parameter
     to fiddle with.  Start by varying by orders of
     magnitude until reasonable results are obtained.  A
     value to the nearest power of 10 is usally adequate.
-    No default value.  Higher values increase
-    regularization strenght and improve conditioning.
+    Higher values increase regularization strenght 
+    and improve conditioning.
 
 ## Keywords
 - `u_0::Array{<:Real,1}`:          
@@ -49,7 +49,7 @@
 
 - `precond::String`:  
     Select the preconditioner for the conjugate gradient method.
-    Default is 'none'.
+    Default is `\"none\"`.
     - `scale = \"small\"`:
         While in principle `precond=\"simple\"` should speed things up, 
         sometimes the preconditioner can cause convergence problems instead,
@@ -61,7 +61,7 @@
         are available.
 
 - `diff_kernel::String`:
-    Kernel to use in the integral to smooth the derivative. By default it's `\"abs\"`, 
+    Kernel to use in the integral to smooth the derivative. By default it is set to `\"abs\"`, 
     the absolute value ``|u'|``. However, it can be changed to `\"square\"`,
     the square value ``(u')^2``. The latter produces smoother
     derivatives, whereas the absolute values tends to make them more blocky.
@@ -71,7 +71,7 @@
 
 - `cgmaxit::Int`:
     Maximum number of iterations to use in conjugate gradient optimisation. 
-    Default is 100.
+    Default is `100`.
 
 - `show_diagn::Bool`:    
     Flag whether to display diagnostics at each iteration. Default is `false`.  
