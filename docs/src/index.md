@@ -8,6 +8,14 @@ Based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/d
 Pages = ["index.md", "examples.md"]
 ```
 
+## Installation
+To install this package and its dependencies, open the Julia REPL and run 
+```julia
+julia> ]add NoiseRobustDifferentiation
+```
+
+Julia 1.5 is required.
+
 ## Functions
 ```@docs
 TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real; kwargs...)
