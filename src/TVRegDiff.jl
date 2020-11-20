@@ -100,9 +100,12 @@ function TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real;
         dx = 1 / (n - 1)
     end
 
-    # Run TVRegDiff for selected method
-    precond = lowercase(precond)
+    # Make string inputs case insensitive
     scale = lowercase(scale)
+    precond = lowercase(precond)
+    diff_kernel = lowercase(diff_kernel)
+    
+    # Run TVRegDiff for selected method
     if scale == "small"
         u = _TVRegDiff_small(data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, diff_kernel, show_diagn)
     elseif scale == "large"
