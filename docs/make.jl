@@ -5,14 +5,11 @@ makedocs(
     sitename = "NoiseRobustDifferentiation.jl",
     format = Documenter.HTML(),
     modules = [NoiseRobustDifferentiation],
-    pages = [
-        "Home"      => "index.md",
-        "Examples"  => "examples.md"
-    ]
+    pages = ["Home" => "index.md", "Examples" => "examples.md"],
 )
 
 deploydocs(
     repo = "github.com/adrhill/NoiseRobustDifferentiation.jl.git",
-    devbranch ="main",
+    devbranch = "main",
     branch = "gh-pages",
 )
