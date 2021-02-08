@@ -35,7 +35,7 @@ savefig("abs_small.svg"); nothing # hide
 ![](abs_small.svg)
 
 ## Examples from paper
-Let's reconstruct the figures from Rick Chartrand's paper *"Numerical differentiation of noisy, nonsmooth data"*.
+Let's reconstruct the figures from Rick Chartrand's paper *"Numerical differentiation of noisy, non-smooth data"*.
 
 The corresponding datasets can be found under `/docs/data`.
 
