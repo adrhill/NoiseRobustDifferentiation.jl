@@ -48,7 +48,7 @@
   - `precond::String`:
     Select the preconditioner for the conjugate gradient method.
     Default is `\"none\"`.
-    
+
       + `scale = \"small\"`:
         While in principle `precond=\"simple\"` should speed things up,
         sometimes the preconditioner can cause convergence problems instead,
@@ -64,7 +64,7 @@
     the square value ``(u')^2``. The latter produces smoother
     derivatives, whereas the absolute values tends to make them more blocky.
   - `cg_tol::Real`:
-    Tolerance used in conjugate gradient method. Default is `1e-6`.
+    Relative tolerance used in conjugate gradient method. Default is `1e-6`.
   - `cgmaxit::Int`:
     Maximum number of iterations to use in conjugate gradient optimisation.
     Default is `100`.
@@ -191,7 +191,7 @@ function _TVRegDiff_small(
         if precond == "simple"
             P = Diagonal(α * diag(L) .+ 1)
         elseif precond == "none"
-            P = Identity()
+            P = I # Identity matrix
         else
             throw(ArgumentError("""unexpected precond "$(precond)" for scale="small"."""))
         end
@@ -201,7 +201,7 @@ function _TVRegDiff_small(
         H = LinearMap(u -> Aᵀ(A(u)) + α * L * u, n + 1, n + 1)
 
         # Solve linear equation.
-        s = cg(H, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
+        s = cg(H, -g; Pl=P, reltol=cg_tol, maxiter=cg_maxiter)
 
         show_diagn && println(
             "Iteration $(i):\trel. change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))",
@@ -295,7 +295,7 @@ function _TVRegDiff_large(
             # Smoothed aggregation
             P = AMGPreconditioner{SmoothedAggregation}(B)
         elseif precond == "none"
-            P = Identity()
+            P = I # Identity matrix
         else
             throw(ArgumentError("""unexpected precod "$(precond)" for scale="large"."""))
         end
@@ -305,7 +305,7 @@ function _TVRegDiff_large(
         H = LinearMap(u -> Aᵀ(A(u)) + α * L * u, n, n)
 
         # Solve linear equation.
-        s = cg(H, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
+        s = cg(H, -g; Pl=P, reltol=cg_tol, maxiter=cg_maxiter)
 
         show_diagn && println(
             "Iteration $(i):\trel. change = $(norm(s) / norm(u)),\tgradient norm = $(norm(g))",
