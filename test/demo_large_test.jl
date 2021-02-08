@@ -7,19 +7,17 @@ If derivative û is smooth, elements of diff(û) should be small.
 Use parameter-sets from MATLAB examples. =#
 """
 function _test_demo_large(data, scale, precond, diff_kernel)
-
-
     @test sum(
         abs.(
             diff(
                 TVRegDiff(
                     data,
                     40,
-                    1e-1,
-                    ε = 1e-8;
-                    scale = scale,
-                    precond = precond,
-                    diff_kernel = diff_kernel,
+                    1e-1;
+                    ε=1e-8,
+                    scale=scale,
+                    precond=precond,
+                    diff_kernel=diff_kernel,
                 ),
             ),
         ),

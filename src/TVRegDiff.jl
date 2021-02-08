@@ -2,15 +2,15 @@
     TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real; kwargs...)
 
 # Arguments
-- `data::Array{<:Real,1}`:
+
+  - `data::Array{<:Real,1}`:
     Vector of data to be differentiated.
 
-- `iter::Int`:
+  - `iter::Int`:
     Number of iterations to run the main loop.  A stopping
     condition based on the norm of the gradient vector `g`
     below would be an easy modification.
-
-- `α::Real`:
+  - `α::Real`:
     Regularization parameter.  This is the main parameter
     to fiddle with.  Start by varying by orders of
     magnitude until reasonable results are obtained.  A
@@ -19,7 +19,8 @@
     and improve conditioning.
 
 ## Keywords
-- `u_0::Array{<:Real,1}`:
+
+  - `u_0::Array{<:Real,1}`:
     Initialization of the iteration.  Default value is the
     naive derivative (without scaling), of appropriate
     length (this being different for the two methods).
@@ -27,7 +28,7 @@
     the intialization, a poor choice can exacerbate
     conditioning issues when the linear system is solved.
 
-- `scale::String`:
+  - `scale::String`:
     Scale of dataset, `\"large\"` or `\"small\"` (case insensitive).
     Default is `\"small\"` .  `\"small\"`  has somewhat better
     boundary behavior, but becomes unwieldly for very large datasets.
@@ -35,51 +36,46 @@
     is more efficient for large-scale problems.  `\"large\"` is
     more readily modified for higher-order derivatives,
     since the implicit differentiation matrix is square.
-
-- `ε::Real`:
+  - `ε::Real`:
     Parameter for avoiding division by zero.  Default value
     is `1e-6`.  Results should not be very sensitive to the
     value.  Larger values improve conditioning and
     therefore speed, while smaller values give more
     accurate results with sharper jumps.
-
-- `dx::Real`:
+  - `dx::Real`:
     Grid spacing, used in the definition of the derivative
     operators.  Default is `1 / length(data)`.
-
-- `precond::String`:
+  - `precond::String`:
     Select the preconditioner for the conjugate gradient method.
     Default is `\"none\"`.
-    - `scale = \"small\"`:
+    
+      + `scale = \"small\"`:
         While in principle `precond=\"simple\"` should speed things up,
         sometimes the preconditioner can cause convergence problems instead,
         and should be left to `\"none\"`.
-    - `scale = \"large\"`:
+      + `scale = \"large\"`:
         The improved preconditioners are one of the main features of the
         algorithm, therefore using the default `\"none\"` is discouraged.
         Currently, `\"diagonal\"`,`\"amg_rs\"`,`\"amg_sa\"`, `\"cholesky\"`
         are available.
-
-- `diff_kernel::String`:
+  - `diff_kernel::String`:
     Kernel to use in the integral to smooth the derivative. By default it is set to
     `\"abs\"`, the absolute value ``|u'|``. However, it can be changed to `\"square\"`,
     the square value ``(u')^2``. The latter produces smoother
     derivatives, whereas the absolute values tends to make them more blocky.
-
-- `cg_tol::Real`:
+  - `cg_tol::Real`:
     Tolerance used in conjugate gradient method. Default is `1e-6`.
-
-- `cgmaxit::Int`:
+  - `cgmaxit::Int`:
     Maximum number of iterations to use in conjugate gradient optimisation.
     Default is `100`.
-
-- `show_diagn::Bool`:
+  - `show_diagn::Bool`:
     Flag whether to display diagnostics at each iteration. Default is `false`.
     Useful for diagnosing preconditioning problems. When tolerance is not met,
     an early iterate being best is more worrying than a large relative residual.
 
 # Output
-- `u`:
+
+  - `u`:
     Estimate of the regularized derivative of data with
     `length(u) = length(data)`.
 """
@@ -87,17 +83,16 @@ function TVRegDiff(
     data::Array{<:Real,1},
     iter::Int,
     α::Real;
-    u_0::Array{<:Real,1} = [NaN],
-    scale::String = "small",
-    ε::Real = 1e-6,
-    dx::Real = NaN,
-    precond::String = "none",
-    diff_kernel::String = "abs",
-    cg_tol::Real = 1e-6,
-    cg_maxiter::Int = 100,
-    show_diagn::Bool = false,
+    u_0::Array{<:Real,1}=[NaN],
+    scale::String="small",
+    ε::Real=1e-6,
+    dx::Real=NaN,
+    precond::String="none",
+    diff_kernel::String="abs",
+    cg_tol::Real=1e-6,
+    cg_maxiter::Int=100,
+    show_diagn::Bool=false,
 )
-
     n = length(data)
     if isnan(dx)
         dx = 1 / (n - 1)
@@ -111,31 +106,11 @@ function TVRegDiff(
     # Run TVRegDiff for selected method
     if scale == "small"
         u = _TVRegDiff_small(
-            data,
-            iter,
-            α,
-            u_0,
-            ε,
-            dx,
-            cg_tol,
-            cg_maxiter,
-            precond,
-            diff_kernel,
-            show_diagn,
+            data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, diff_kernel, show_diagn
         )
     elseif scale == "large"
         u = _TVRegDiff_large(
-            data,
-            iter,
-            α,
-            u_0,
-            ε,
-            dx,
-            cg_tol,
-            cg_maxiter,
-            precond,
-            diff_kernel,
-            show_diagn,
+            data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, diff_kernel, show_diagn
         )
     else
         throw(ArgumentError("""in keyword argument scale,
@@ -161,7 +136,6 @@ function _TVRegDiff_small(
     diff_kernel::String,
     show_diagn::Bool,
 )
-
     n = length(data)
 
     #= Assert initialization if provided, otherwise set
@@ -172,7 +146,7 @@ function _TVRegDiff_small(
         throw(
             DimensionMismatch(
                 """in keyword argument u_0, size $(size(u_0)) of intialization
-                doesn't match size ($(n + 1),) required for scale=\"small\".""",
+                doesn't match size ($(n + 1),) required for scale=\"small\"."""
             ),
         )
     end
@@ -184,11 +158,11 @@ function _TVRegDiff_small(
 
     # Construct antidifferentiation operator and its adjoint.
     function A(x)
-        (cumsum(x)-0.5*(x.-x[1]))[2:end] * dx
+        return (cumsum(x) - 0.5 * (x .- x[1]))[2:end] * dx
     end
 
     function Aᵀ(x)
-        [sum(x) / 2; (sum(x) .- cumsum(x) .- x / 2)] * dx
+        return [sum(x) / 2; (sum(x) .- cumsum(x) .- x / 2)] * dx
     end
 
     # Precompute antidifferentiation adjoint on data
@@ -196,7 +170,7 @@ function _TVRegDiff_small(
     offset = data[1]
     Aᵀb = Aᵀ(offset .- data)
 
-    for i = 1:iter
+    for i in 1:iter
         if diff_kernel == "abs"
             # Diagonal matrix of weights, for linearizing E-L equation.
             Q = Diagonal(1 ./ sqrt.((D * u) .^ 2 .+ ε))
@@ -227,7 +201,7 @@ function _TVRegDiff_small(
         H = LinearMap(u -> Aᵀ(A(u)) + α * L * u, n + 1, n + 1)
 
         # Solve linear equation.
-        s = cg(H, -g; Pl = P, tol = cg_tol, maxiter = cg_maxiter)
+        s = cg(H, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
 
         show_diagn && println("""Iteration $(i):\t
                               rel. change = $(norm(s) / norm(u)),\t
@@ -236,7 +210,7 @@ function _TVRegDiff_small(
         # Update current solution
         u += s
     end
-    return u[1:end-1]
+    return u[1:(end - 1)]
 end
 
 """
@@ -255,7 +229,6 @@ function _TVRegDiff_large(
     diff_kernel::String,
     show_diagn::Bool,
 )
-
     n = length(data)
 
     # Since Au(0) = 0, we need to adjust.
@@ -269,7 +242,7 @@ function _TVRegDiff_large(
         throw(
             DimensionMismatch(
                 """in keyword argument u_0, size $(size(u_0)) of intialization
-                doesn't match size ($(n),) required for scale=\"large\".""",
+                doesn't match size ($(n),) required for scale=\"large\"."""
             ),
         )
     end
@@ -283,13 +256,13 @@ function _TVRegDiff_large(
     A(x) = cumsum(x)
 
     function Aᵀ(x)
-        sum(x) .- [0; cumsum(x[1:end-1])]
+        return sum(x) .- [0; cumsum(x[1:(end - 1)])]
     end
 
     # Precompute antidifferentiation adjoint on data
     Aᵀd = Aᵀ(data)
 
-    for i = 1:iter
+    for i in 1:iter
         if diff_kernel == "abs"
             # Diagonal matrix of weights, for linearizing E-L equation.
             Q = Diagonal(1 ./ sqrt.((D * u) .^ 2 .+ ε))
@@ -331,7 +304,7 @@ function _TVRegDiff_large(
         H = LinearMap(u -> Aᵀ(A(u)) + α * L * u, n, n)
 
         # Solve linear equation.
-        s = cg(H, -g; Pl = P, tol = cg_tol, maxiter = cg_maxiter)
+        s = cg(H, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
 
         show_diagn && println("""Iteration $(i):\t
                               rel. change = $(norm(s) / norm(u)),\t
