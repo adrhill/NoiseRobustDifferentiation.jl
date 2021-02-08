@@ -113,8 +113,8 @@ function TVRegDiff(
             data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, diff_kernel, show_diagn
         )
     else
-        throw(ArgumentError("""in keyword argument scale,
-                            expected  \"large\" or \"small\", got \"$(scale)\""""))
+        throw(ArgumentError("in keyword argument scale,
+                            expected  \"large\" or \"small\", got \"$(scale)\"."))
     end
 
     return u
@@ -144,10 +144,8 @@ function _TVRegDiff_small(
         u_0 = [0; diff(data); 0] / dx
     elseif length(u_0) != (n + 1)
         throw(
-            DimensionMismatch(
-                """in keyword argument u_0, size $(size(u_0)) of intialization
-                doesn't match size ($(n + 1),) required for scale=\"small\"."""
-            ),
+            DimensionMismatch("in keyword argument u_0, size $(size(u_0)) of intialization
+                              doesn't match size ($(n + 1),) required for scale=\"small\".")
         )
     end
     u = copy(u_0)
@@ -179,8 +177,8 @@ function _TVRegDiff_small(
         elseif diff_kernel == "square"
             L = dx * Dᵀ * D
         else
-            throw(ArgumentError("""unexpected input \"$(diff_kernel)\"
-                                in keyword argument diff_kernel for scale=\"small\""""))
+            throw(ArgumentError("unexpected input \"$(diff_kernel)\"
+                                in keyword argument diff_kernel for scale=\"small\"."))
         end
 
         # Gradient of functional.
@@ -192,8 +190,8 @@ function _TVRegDiff_small(
         elseif precond == "none"
             P = Identity()
         else
-            throw(ArgumentError("""unexpected input \"$(precond)\"
-                                in keyword argument precond for scale=\"small\""""))
+            throw(ArgumentError("unexpected input \"$(precond)\"
+                                in keyword argument precond for scale=\"small\"."))
         end
 
         # Prepare linear operator for linear equation.
@@ -203,9 +201,9 @@ function _TVRegDiff_small(
         # Solve linear equation.
         s = cg(H, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
 
-        show_diagn && println("""Iteration $(i):\t
+        show_diagn && println("Iteration $(i):\t
                               rel. change = $(norm(s) / norm(u)),\t
-                              gradient norm = $(norm(g))""")
+                              gradient norm = $(norm(g))")
 
         # Update current solution
         u += s
@@ -240,10 +238,8 @@ function _TVRegDiff_large(
         u_0 = [0; diff(data)] / dx
     elseif length(u_0) != n
         throw(
-            DimensionMismatch(
-                """in keyword argument u_0, size $(size(u_0)) of intialization
-                doesn't match size ($(n),) required for scale=\"large\"."""
-            ),
+            DimensionMismatch("in keyword argument u_0, size $(size(u_0)) of intialization
+                              doesn't match size ($(n),) required for scale=\"large\".")
         )
     end
     u = copy(u_0) * dx
@@ -271,8 +267,8 @@ function _TVRegDiff_large(
         elseif diff_kernel == "square"
             L = Dᵀ * D
         else
-            throw(ArgumentError("""unexpected input \"$(diff_kernel)\"
-                                in keyword argument diff_kernel for scale=\"large\""""))
+            throw(ArgumentError("unexpected input \"$(diff_kernel)\"
+                                in keyword argument diff_kernel for scale=\"large\"."))
         end
 
         # Gradient of functional.
@@ -295,8 +291,8 @@ function _TVRegDiff_large(
         elseif precond == "none"
             P = Identity()
         else
-            throw(ArgumentError("""unexpected input \"$(precond)\"
-                                in keyword argument precond for scale=\"large\""""))
+            throw(ArgumentError("unexpected input \"$(precond)\"
+                                in keyword argument precond for scale=\"large\"."))
         end
 
         # Prepare linear operator for linear equation.
@@ -306,9 +302,9 @@ function _TVRegDiff_large(
         # Solve linear equation.
         s = cg(H, -g; Pl=P, tol=cg_tol, maxiter=cg_maxiter)
 
-        show_diagn && println("""Iteration $(i):\t
+        show_diagn && println("Iteration $(i):\t
                               rel. change = $(norm(s) / norm(u)),\t
-                              gradient norm = $(norm(g))""")
+                              gradient norm = $(norm(g))")
 
         # Update current solution
         u += s
