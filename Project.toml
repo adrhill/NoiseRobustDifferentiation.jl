@@ -1,7 +1,7 @@
 name = "NoiseRobustDifferentiation"
 uuid = "470638dc-0858-4731-a73a-678bdc45695b"
 authors = ["Adrian Hill"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 IterativeSolvers = "42fd0dbc-a981-5370-80f2-aaf504508153"

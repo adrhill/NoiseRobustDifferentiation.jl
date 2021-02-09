@@ -23,7 +23,7 @@ TVRegDiff
 
 ## Differences to MATLAB Code
 ### Conjugate gradient method
-The [original code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) uses MATLAB's inbuilt function `pcg()`, which implements the preconditioned conjugate gradients method (PCG). This code uses the cojugate gradients method (CG) from [IterativeSolvers.jl](https://github.com/JuliaMath/IterativeSolvers.jl). 
+The [original code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) uses MATLAB's inbuilt function `pcg()`, which implements the preconditioned conjugate gradients method (PCG). This code uses the conjugate gradients method (CG) from [IterativeSolvers.jl](https://github.com/JuliaMath/IterativeSolvers.jl). 
 Refer to the [implementation details](https://juliamath.github.io/IterativeSolvers.jl/dev/linear_systems/cg/#Implementation-details-1) for a brief discussion of differences between both methods.
 
 Since the CG method from IterativeSolvers.jl allows for preconditioners, most of the options from [Preconditioners.jl](https://github.com/mohamed82008/Preconditioners.jl) are implemented using default parameters.
