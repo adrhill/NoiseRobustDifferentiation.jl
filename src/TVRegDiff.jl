@@ -48,7 +48,7 @@
   - `precond::String`:
     Select the preconditioner for the conjugate gradient method.
     Default is `\"none\"`.
-
+    
       + `scale = \"small\"`:
         While in principle `precond=\"simple\"` should speed things up,
         sometimes the preconditioner can cause convergence problems instead,
@@ -80,10 +80,10 @@
     `length(u) = length(data)`.
 """
 function TVRegDiff(
-    data::Array{<:Real,1},
+    data::AbstractVector,
     iter::Int,
     α::Real;
-    u_0::Array{<:Real,1}=[NaN],
+    u_0::AbstractVector=[NaN],
     scale::String="small",
     ε::Real=1e-6,
     dx::Real=NaN,
@@ -92,7 +92,7 @@ function TVRegDiff(
     cg_tol::Real=1e-6,
     cg_maxiter::Int=100,
     show_diagn::Bool=false,
-)
+)::AbstractVector
     n = length(data)
     if isnan(dx)
         dx = 1 / (n - 1)
@@ -123,10 +123,10 @@ end
 Total variance regularized numerical differences for small scale problems.
 """
 function _TVRegDiff_small(
-    data::Array{<:Real,1},
+    data::AbstractVector,
     iter::Int,
     α::Real,
-    u_0::Array{<:Real,1},
+    u_0::AbstractVector,
     ε::Real,
     dx::Real,
     cg_tol::Real,
@@ -134,7 +134,7 @@ function _TVRegDiff_small(
     precond::String,
     diff_kernel::String,
     show_diagn::Bool,
-)
+)::AbstractVector
     n = length(data)
 
     #= Assert initialization if provided, otherwise set
@@ -217,10 +217,10 @@ end
 Total variance regularized numerical differences for large scale problems.
 """
 function _TVRegDiff_large(
-    data::Array{<:Real,1},
+    data::AbstractVector,
     iter::Int,
     α::Real,
-    u_0::Array{<:Real,1},
+    u_0::AbstractVector,
     ε::Real,
     dx::Real,
     cg_tol::Real,
@@ -228,7 +228,7 @@ function _TVRegDiff_large(
     precond::String,
     diff_kernel::String,
     show_diagn::Bool,
-)
+)::AbstractVector
     n = length(data)
 
     # Since Au(0) = 0, we need to adjust.
