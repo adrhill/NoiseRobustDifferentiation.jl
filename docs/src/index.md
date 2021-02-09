@@ -18,7 +18,7 @@ Julia 1.5 is required.
 
 ## Functions
 ```@docs
-TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real; kwargs...)
+TVRegDiff
 ```
 
 ## Differences to MATLAB Code

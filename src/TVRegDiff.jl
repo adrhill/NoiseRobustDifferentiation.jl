@@ -1,9 +1,9 @@
 """
-    TVRegDiff(data::Array{<:Real,1}, iter::Int, α::Real; kwargs...)
+    TVRegDiff(data::AbstractVector, iter::Int, α::Real; kwargs...)
 
 # Arguments
 
-  - `data::Array{<:Real,1}`:
+  - `data::AbstractVector`:
     Vector of data to be differentiated.
 
   - `iter::Int`:
@@ -20,7 +20,7 @@
 
 ## Keywords
 
-  - `u_0::Array{<:Real,1}`:
+  - `u_0::AbstractVector`:
     Initialization of the iteration.  Default value is the
     naive derivative (without scaling), of appropriate
     length (this being different for the two methods).
@@ -48,7 +48,7 @@
   - `precond::String`:
     Select the preconditioner for the conjugate gradient method.
     Default is `\"none\"`.
-    
+
       + `scale = \"small\"`:
         While in principle `precond=\"simple\"` should speed things up,
         sometimes the preconditioner can cause convergence problems instead,
