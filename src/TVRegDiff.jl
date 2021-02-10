@@ -48,7 +48,7 @@
   - `precond::String`:
     Select the preconditioner for the conjugate gradient method.
     Default is `\"none\"`.
-
+    
       + `scale = \"small\"`:
         While in principle `precond=\"simple\"` should speed things up,
         sometimes the preconditioner can cause convergence problems instead,
