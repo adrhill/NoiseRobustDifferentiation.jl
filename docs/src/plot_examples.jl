@@ -16,7 +16,7 @@ function plot_example_abs(f, u, x, data, û_FDM, û)
         [û_FDM, û];
         c=[:2 :1],
         ylabel=L"u",
-        label=[L"\hat{u}_{FDM}" L"\hat{u}_{TVRD}"],
+        label=[L"\hat{u}_{FDM}" L"\hat{u}_{tvdiff}"],
         legend=:bottomright,
     )
 
@@ -58,7 +58,7 @@ function plot_demo_large_TVReg(f, û)
     append!(û, NaN) # hide
 
     pf = plot(f; c=:1, ylabel=latexstring("f (L/min)"))
-    pu = plot(û; c=:1, ylabel=L"\hat{u}_{TVRD} (L/min/s)", xlabel=L"t (s)")
+    pu = plot(û; c=:1, ylabel=L"\hat{u}_{tvdiff} (L/min/s)", xlabel=L"t (s)")
 
     return plot(pf, pu; layout=(2, 1), legend=false, show=true, dpi=300)
 end
@@ -79,7 +79,7 @@ function plot_TVRegDiff(f, û, dx::Real)
     x = range(0; step=dx, length=n)
 
     pf = plot(x, f; ylabel=L"f")
-    pu = plot(x, û; ylabel=L"\hat{u}_{TVRD}")
+    pu = plot(x, û; ylabel=L"\hat{u}_{tvdiff}")
 
     return plot(pf, pu; layout=(2, 1), legend=false, show=true)
 end
@@ -95,7 +95,7 @@ end
 function plot_TVRegDiff_all(f, û_FDM, û_TVR)
     pf = plot(f; c=:1, ylabel=L"f")
     pu1 = plot(û_FDM; c=:1, ylabel=L"\hat{u}_{FDM}")
-    pu2 = plot(û_TVR; c=:1, ylabel=L"\hat{u}_{TVRD}")
+    pu2 = plot(û_TVR; c=:1, ylabel=L"\hat{u}_{tvdiff}")
 
     return plot(pf, pu1, pu2; layout=(3, 1), legend=false, show=true, dpi=300)
 end
