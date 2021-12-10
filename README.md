@@ -10,22 +10,21 @@ Julia reimplementation of *Total Variation Regularized Numerical Differentiation
 Based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) and [Simone Sturniolo's Python reimplementation](https://github.com/stur86/tvregdiff).
 
 ## Examples
-`tvdiff` works on noisy data without suppressing jump discontinuities
+This package exports a single function `tvdiff`. 
+
+It works on noisy data without suppressing jump discontinuities:
 ![](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/paper_small7000.svg)
 
-`tvdiff` also works on large datasets
+and also on large datasets:
 ![](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/paper_large_all.png)
 
 [More examples can be found in the documentation.](https://adrhill.github.io/NoiseRobustDifferentiation.jl/dev/examples/)
 
 ## Installation
 To install this package and its dependencies, open the Julia REPL and run 
-
 ```julia
 julia> ]add NoiseRobustDifferentiation
 ```
-
-Julia 1.5 is required.
 
 ## Citation
 Please cite the following paper if you use this code in published work:
