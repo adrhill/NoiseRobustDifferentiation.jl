@@ -110,7 +110,7 @@ Using `tvdiff` with `ε=1e-9`, we obtain a strongly regularized result. Larger v
 
 ```@example paper_large
 û = tvdiff(data, 40, 1e-1, scale="large", precond="amg_rs", ε=1e-9)
-plot_demo_large_TVReg(data, û) # hide
+plot_demo_large_tvdiff(data, û) # hide
 savefig("paper_large_jump.png") # hide
 plot_tvdiff_all(data, û) # hide
 savefig("paper_large_all.png"); nothing # hide
@@ -122,7 +122,7 @@ Therefore raising ``\varepsilon`` to `1e-7` gives a smoother result. However, ju
 
 ```@example paper_large
 û = tvdiff(data, 40, 1e-1, scale="large", precond="amg_rs", ε=1e-7)
-plot_demo_large_TVReg(data, û) # hide
+plot_demo_large_tvdiff(data, û) # hide
 savefig("paper_large_smooth.png"); nothing # hide
 ```
 
