@@ -63,18 +63,18 @@ function plot_demo_large_TVReg(f, û)
     return plot(pf, pu; layout=(2, 1), legend=false, show=true, dpi=300)
 end
 
-function plot_TVRegDiff(f, û)
+function plot_tvdiff(f, û)
     n = length(f)
     dx = 1 / (n - 1)
 
-    return plot_TVRegDiff(f, û, dx)
+    return plot_tvdiff(f, û, dx)
 end
 
 """
 Plot data f and total variance regularized
 numerical differences `u`.
 """
-function plot_TVRegDiff(f, û, dx::Real)
+function plot_tvdiff(f, û, dx::Real)
     n = length(f)
     x = range(0; step=dx, length=n)
 
@@ -84,15 +84,15 @@ function plot_TVRegDiff(f, û, dx::Real)
     return plot(pf, pu; layout=(2, 1), legend=false, show=true)
 end
 
-function plot_TVRegDiff_all(f, û_TVR)
+function plot_tvdiff_all(f, û_TVR)
     n = length(f)
     dx = 1 / (n - 1)
     û_FDM = diff(f) / dx  # FDM
 
-    return plot_TVRegDiff_all(f, û_FDM, û_TVR)
+    return plot_tvdiff_all(f, û_FDM, û_TVR)
 end
 
-function plot_TVRegDiff_all(f, û_FDM, û_TVR)
+function plot_tvdiff_all(f, û_FDM, û_TVR)
     pf = plot(f; c=:1, ylabel=L"f")
     pu1 = plot(û_FDM; c=:1, ylabel=L"\hat{u}_{FDM}")
     pu2 = plot(û_TVR; c=:1, ylabel=L"\hat{u}_{TVRD}")

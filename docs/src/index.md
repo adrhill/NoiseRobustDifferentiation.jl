@@ -18,7 +18,7 @@ Julia 1.5 is required.
 
 ## Functions
 ```@docs
-TVRegDiff
+tvdiff
 ```
 
 ## Differences to MATLAB Code

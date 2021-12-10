@@ -1,10 +1,11 @@
-using SafeTestsets
+using NoiseRobustDifferentiation
+using Test
 
-@safetestset "TVRegDiff" begin
-    @safetestset "scale=\"small\"" begin
-        include("TVRegDiff_small_test.jl")
+@testset "tvdiff" begin
+    @testset "scale=\"small\"" begin
+        include("runtests_small.jl")
     end
-    @safetestset "scale=\"large\"" begin
-        include("TVRegDiff_large_test.jl")
+    @testset "scale=\"large\"" begin
+        include("runtests_large.jl")
     end
 end

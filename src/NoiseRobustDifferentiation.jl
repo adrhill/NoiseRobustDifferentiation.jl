@@ -6,8 +6,8 @@ using Preconditioners
 using LinearMaps: LinearMap
 using IterativeSolvers: cg
 
-include("TVRegDiff.jl")
+include("tvdiff.jl")
 
-export TVRegDiff
+export tvdiff
 
 end # module

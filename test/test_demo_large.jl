@@ -10,7 +10,7 @@ function _test_demo_large(data, scale, precond, diff_kernel)
     @test sum(
         abs.(
             diff(
-                TVRegDiff(
+                tvdiff(
                     data,
                     40,
                     1e-1;

@@ -6,10 +6,8 @@ function _eval_function(f, u, scale, precond, diff_kernel; n=50, iter=1, α=0.1,
     rng = MersenneTwister(rng_seed)
     data = f.(x) + 0.05 * (rand(rng, n) .- 0.5)
 
-    # use TVRegDiff
-    û = TVRegDiff(
-        data, iter, α; dx=dx, scale=scale, precond=precond, diff_kernel=diff_kernel
-    )
+    # use tvdiff
+    û = tvdiff(data, iter, α; dx=dx, scale=scale, precond=precond, diff_kernel=diff_kernel)
 
     return rmse = √(mean(abs2.(û - u.(x))))
 end
@@ -34,11 +32,11 @@ function _test_symbolic_functions(scale, precond, diff_kernel)
         α = 0.1 # use lower value for alpha
         @test _eval_function(sin, cos, scale, precond, diff_kernel; α=α, n=50, iter=2) < 0.3
         @test _eval_function(sin, cos, scale, precond, diff_kernel; α=α, n=50, iter=10) <
-              0.27
+            0.27
         @test _eval_function(sin, cos, scale, precond, diff_kernel; α=α, n=1000, iter=2) <
-              0.3
+            0.3
         @test _eval_function(sin, cos, scale, precond, diff_kernel; α=α, n=1000, iter=10) <
-              0.19
+            0.19
     end
 end
 

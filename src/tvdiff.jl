@@ -1,12 +1,12 @@
 """
-    TVRegDiff(data::AbstractVector, iter::Int, α::Real; kwargs...)
+    tvdiff(data::AbstractVector, iter::Integer, α::Real; kwargs...)
 
 # Arguments
 
   - `data::AbstractVector`:
     Vector of data to be differentiated.
 
-  - `iter::Int`:
+  - `iter::Integer`:
     Number of iterations to run the main loop.  A stopping
     condition based on the norm of the gradient vector `g`
     below would be an easy modification.
@@ -79,9 +79,9 @@
     Estimate of the regularized derivative of data with
     `length(u) = length(data)`.
 """
-function TVRegDiff(
+function tvdiff(
     data::AbstractVector,
-    iter::Int,
+    iter::Integer,
     α::Real;
     u_0::AbstractVector=[NaN],
     scale::String="small",
@@ -90,7 +90,7 @@ function TVRegDiff(
     precond::String="none",
     diff_kernel::String="abs",
     cg_tol::Real=1e-6,
-    cg_maxiter::Int=100,
+    cg_maxiter::Integer=100,
     show_diagn::Bool=false,
 )::AbstractVector
     n = length(data)
@@ -103,34 +103,34 @@ function TVRegDiff(
     precond = lowercase(precond)
     diff_kernel = lowercase(diff_kernel)
 
-    # Run TVRegDiff for selected method
-    if scale == "small"
-        u = _TVRegDiff_small(
-            data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, diff_kernel, show_diagn
-        )
-    elseif scale == "large"
-        u = _TVRegDiff_large(
-            data, iter, α, u_0, ε, dx, cg_tol, cg_maxiter, precond, diff_kernel, show_diagn
-        )
-    else
-        throw(ArgumentError("""scale expected to be "large" or "small", got "$(scale)"."""))
-    end
-
-    return u
+    # Run tvdiff for selected method
+    return tvdiff(
+        Val(Symbol(scale)),
+        data,
+        iter,
+        α,
+        u_0,
+        ε,
+        dx,
+        cg_tol,
+        cg_maxiter,
+        precond,
+        diff_kernel,
+        show_diagn,
+    )
 end
 
-"""
-Total variance regularized numerical differences for small scale problems.
-"""
-function _TVRegDiff_small(
+# Total variance regularized numerical differences for small scale problems.
+function tvdiff(
+    ::Val{:small},
     data::AbstractVector,
-    iter::Int,
+    iter::Integer,
     α::Real,
     u_0::AbstractVector,
     ε::Real,
     dx::Real,
     cg_tol::Real,
-    cg_maxiter::Int,
+    cg_maxiter::Integer,
     precond::String,
     diff_kernel::String,
     show_diagn::Bool,
@@ -213,18 +213,17 @@ function _TVRegDiff_small(
     return u[1:(end - 1)]
 end
 
-"""
-Total variance regularized numerical differences for large scale problems.
-"""
-function _TVRegDiff_large(
+# Total variance regularized numerical differences for large scale problems.
+function tvdiff(
+    ::Val{:large},
     data::AbstractVector,
-    iter::Int,
+    iter::Integer,
     α::Real,
     u_0::AbstractVector,
     ε::Real,
     dx::Real,
     cg_tol::Real,
-    cg_maxiter::Int,
+    cg_maxiter::Integer,
     precond::String,
     diff_kernel::String,
     show_diagn::Bool,
@@ -245,7 +244,7 @@ function _TVRegDiff_large(
             ),
         )
     end
-    u = copy(u_0) * dx
+    u = deepcopy(u_0) * dx
 
     # Construct differentiation matrix.
     D = spdiagm(n, n, 0 => -ones(n - 1), 1 => ones(n - 1)) / dx
