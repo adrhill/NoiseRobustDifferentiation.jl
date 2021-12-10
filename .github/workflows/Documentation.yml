@@ -16,6 +16,7 @@ jobs:
           version: '1'
       - name: Install dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install libxt6 libxrender1 libxext6 libgl1-mesa-glx libqt5widgets5 
           julia --color=yes --project=docs/ -e '
             using Pkg; 
