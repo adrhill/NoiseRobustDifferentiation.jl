@@ -56,8 +56,7 @@
       + `scale = \"large\"`:
         The improved preconditioners are one of the main features of the
         algorithm, therefore using the default `\"none\"` is discouraged.
-        Currently, `\"diagonal\"`,`\"amg_rs\"`,`\"amg_sa\"`, `\"cholesky\"`
-        are available.
+        Currently, `\"diagonal\"`,`\"amg_rs\"`,`\"amg_sa\"` are available.
   - `diff_kernel::String`:
     Kernel to use in the integral to smooth the derivative. By default it is set to
     `\"abs\"`, the absolute value ``|u'|``. However, it can be changed to `\"square\"`,
@@ -282,10 +281,7 @@ function tvdiff(
         # Select preconditioner.
         B = α * L + Diagonal(reverse(cumsum(n:-1:1)))
 
-        if precond == "cholesky"
-            # Incomplete Cholesky preconditioner with cut-off level 2
-            P = CholeskyPreconditioner(B, 2)
-        elseif precond == "diagonal"
+        if precond == "diagonal"
             P = DiagonalPreconditioner(B)
         elseif precond == "amg_rs"
             # Ruge-Stuben variant

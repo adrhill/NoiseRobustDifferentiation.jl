@@ -9,7 +9,7 @@ include("test_demo_large.jl")
 
 _testset_output_dim("large")
 _testset_symbolic_functions(
-    "large", ["amg_rs", "amg_sa", "cholesky", "diagonal", "none"], ["abs", "square"]
+    "large", ["amg_rs", "amg_sa", "diagonal", "none"], ["abs", "square"]
 )
 _testset_demo_large("large", ["amg_rs"], ["abs"])
 
