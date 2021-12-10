@@ -5,7 +5,7 @@
 | [![][docs-stable-img]][docs-stable-url] [![][docs-latest-img]][docs-latest-url] | [![Build Status][ci-img]][ci-url]         | [![][codecov-img]][codecov-url] |
 
 
-Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (tvdiff).
+Julia reimplementation of *Total Variation Regularized Numerical Differentiation* (TVDiff).
 
 Based on [Rick Chartrand's original Matlab code](https://sites.google.com/site/dnartrahckcir/home/tvdiff-code) and [Simone Sturniolo's Python reimplementation](https://github.com/stur86/tvregdiff).
 
