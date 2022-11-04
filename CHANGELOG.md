@@ -1,5 +1,12 @@
 # NoiseRobustDifferentiation.jl
 
+## Version `v0.2.2`
+- ![Feature][badge-feature] Add back `CholeskyPreconditioner`. ([#21][pr-21])
+- ![Maintenance][badge-maintenance] Update dependencies. ([#20][pr-20])
+
+## Version `v0.2.1`
+- ![Bugfix][badge-bugfix] Fix documentation.
+
 ## Version `v0.2.0`
 - ![BREAKING][badge-breaking] renamed exported function `TVRegDiff` to `tvdiff`. ([#16][pr-16])
 - ![BREAKING][badge-breaking] Removed `CholeskyPreconditioner`. ([#16][pr-16], [#17][pr-17])
@@ -19,6 +26,8 @@
 
 [pr-16]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/16
 [pr-17]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/17
+[pr-20]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/20
+[pr-21]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/21
 
 [badge-breaking]: https://img.shields.io/badge/BREAKING-red.svg
 [badge-deprecation]: https://img.shields.io/badge/deprecation-orange.svg
