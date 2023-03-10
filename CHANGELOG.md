@@ -1,4 +1,6 @@
 # NoiseRobustDifferentiation.jl
+## Version `v0.2.3`
+- ![Maintenance][badge-maintenance] Update dependencies. ([#22][pr-22])
 
 ## Version `v0.2.2`
 - ![Feature][badge-feature] Add back `CholeskyPreconditioner`. ([#21][pr-21])
@@ -28,6 +30,7 @@
 [pr-17]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/17
 [pr-20]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/20
 [pr-21]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/21
+[pr-22]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/22
 
 [badge-breaking]: https://img.shields.io/badge/BREAKING-red.svg
 [badge-deprecation]: https://img.shields.io/badge/deprecation-orange.svg
