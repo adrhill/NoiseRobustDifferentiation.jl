@@ -1,4 +1,8 @@
 # NoiseRobustDifferentiation.jl
+## Version `v0.2.4`
+- ![Documentation][badge-docs] Fix name of keyword argument `cg_maxiter` in docstring ([#23][pr-23])
+
+
 ## Version `v0.2.3`
 - ![Maintenance][badge-maintenance] Update dependencies. ([#22][pr-22])
 
@@ -24,6 +28,7 @@
 ![Security][badge-security]
 ![Experimental][badge-experimental]
 ![Maintenance][badge-maintenance]
+![Documentation][badge-docs]
 -->
 
 [pr-16]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/16
@@ -31,6 +36,7 @@
 [pr-20]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/20
 [pr-21]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/21
 [pr-22]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/22
+[pr-23]: https://github.com/adrhill/NoiseRobustDifferentiation.jl/pull/23
 
 [badge-breaking]: https://img.shields.io/badge/BREAKING-red.svg
 [badge-deprecation]: https://img.shields.io/badge/deprecation-orange.svg
@@ -40,3 +46,4 @@
 [badge-security]: https://img.shields.io/badge/security-black.svg
 [badge-experimental]: https://img.shields.io/badge/experimental-lightgrey.svg
 [badge-maintenance]: https://img.shields.io/badge/maintenance-gray.svg
+[badge-docs]: https://img.shields.io/badge/docs-orange.svg
