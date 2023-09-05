@@ -64,7 +64,7 @@
     derivatives, whereas the absolute values tends to make them more blocky.
   - `cg_tol::Real`:
     Relative tolerance used in conjugate gradient method. Default is `1e-6`.
-  - `cgmaxit::Int`:
+  - `cg_maxiter::Int`:
     Maximum number of iterations to use in conjugate gradient optimisation.
     Default is `100`.
   - `show_diagn::Bool`:
